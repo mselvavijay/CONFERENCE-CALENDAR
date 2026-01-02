@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - Conference</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+
+<body>
+
+    <!-- Auth Overlay -->
+    <div id="auth-overlay" class="auth-overlay">
+        <div class="glass-panel auth-box">
+            <h2>Admin Login</h2>
+            <p style="margin: 10px 0;">Restricted Access</p>
+            <input type="password" id="admin-pass" placeholder="Enter Passphrase">
+            <button class="btn primary" id="btn-login" style="width:100%; margin-top:10px;">Login</button>
+            <p id="login-error" style="color:#ff6b6b; margin-top:10px; display:none;">Invalid Passphrase</p>
+            <a href="index.html" style="color:white; display:block; margin-top:20px; font-size:0.8rem;">Go Back Home</a>
+        </div>
+    </div>
+
+    <div class="container glass-panel" id="admin-content" style="filter: blur(10px); pointer-events:none;">
+        <header>
+            <h1>Admin Dashboard</h1>
+            <nav class="nav-links">
+                <a href="index.html">Back to Home</a>
+                <a href="#" class="active">Uploads</a>
+                <a href="#" id="btn-logout">Logout</a>
+            </nav>
+        </header>
+
+        <section class="admin-dashboard">
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="glass-panel stat-card">
+                    <h3>Total Events</h3>
+                    <div class="stat-number" id="stat-total">0</div>
+                </div>
+                <div class="glass-panel stat-card">
+                    <h3>Topics covered</h3>
+                    <div class="stat-number" id="stat-topics">0</div>
+                </div>
+                <div class="glass-panel stat-card">
+                    <h3>Countries</h3>
+                    <div class="stat-number" id="stat-countries">0</div>
+                </div>
+            </div>
+
+            <!-- Upload Area -->
+            <div class="glass-panel" style="padding: 20px;">
+                <h2>Ingest Conference Data</h2>
+                <p style="margin-bottom:20px; opacity:0.8;">Upload .xlsx files here. The system will merge new events.
+                </p>
+
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <input type="file" id="file-upload" accept=".xlsx" style="width:auto;">
+                    <button class="btn primary" id="btn-upload">Upload & Process</button>
+                    <div id="upload-spinner" style="display:none;">⏳ Processing...</div>
+                </div>
+
+                <div id="upload-status" style="margin-top:20px; padding:10px; border-radius:8px;"></div>
+            </div>
+
+            <!-- Re-Geocode Area -->
+            <div class="glass-panel" style="padding: 20px; margin-top: 20px;">
+                <h2>Fix Map Display</h2>
+                <p style="margin-bottom:20px; opacity:0.8;">If events are not showing on the map, click below to
+                    re-geocode all locations.</p>
+
+                <button class="btn primary" id="btn-re-geocode">Re-Geocode All Events</button>
+                <div id="geocode-spinner" style="display:none; margin-top:10px;">⏳ Geocoding in progress... This may
+                    take 1-2 minutes.</div>
+                <div id="geocode-status" style="margin-top:20px; padding:10px; border-radius:8px;"></div>
+            </div>
+
+        </section>
+    </div>
+
+    <script src="assets/admin.js"></script>
+</body>
+
+</html>

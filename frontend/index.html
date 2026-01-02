@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Events Portal</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+    <!-- MapLibre JS (Alternative for Globe if needed, but keeping Leaflet for now per previous revert) -->
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/style.css?v=3">
+
+    <!-- Three.js for 3D Background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+
+<body class="no-scroll">
+    <!-- Canvas for 3D Background -->
+    <canvas id="hero-canvas"></canvas>
+
+    <!-- Section 1: Hero / Landing -->
+    <section id="hero-section">
+        <div class="hero-content glass-panel">
+            <h1>CONFERENCE CALENDAR</h1>
+            <h2 class="year-accent">2025-26</h2>
+            <p>Discover the future of technology and innovation across the globe.</p>
+            <button class="btn primary btn-large" onclick="scrollToPortal()">Explore Now</button>
+        </div>
+    </section>
+
+    <!-- Section 2: Portal -->
+    <section id="portal-section">
+        <div class="container glass-panel">
+            <header>
+                <div class="header-actions">
+                    <button class="btn primary" id="btn-view-map" data-i18n="btn-view-map">Map View</button>
+                    <button class="btn" id="btn-view-list" data-i18n="btn-view-list">List View</button>
+                    <button class="btn" id="btn-upcoming" data-i18n="btn-upcoming">Upcoming Events</button>
+                </div>
+                <nav class="nav-links">
+                    <a href="#" class="active" id="nav-home" data-i18n="nav-home">Home</a>
+                    <a href="#" id="nav-my-events"><span data-i18n="nav-my-events">My Events</span> (<span
+                            id="my-events-count">0</span>)</a>
+                    <a href="admin.html" data-i18n="nav-admin">Admin</a>
+                    <select id="lang-toggle" style="width: auto; margin-left:10px; background:rgba(0,0,0,0.2);">
+                        <option value="en">ENG</option>
+                        <option value="fr">FR</option>
+                        <option value="es">ES</option>
+                        <option value="de">DE</option>
+                        <option value="it">IT</option>
+                    </select>
+                </nav>
+            </header>
+
+            <div class="main-grid">
+                <!-- Sidebar: Filters -->
+                <aside class="sidebar glass-panel">
+                    <h3 data-i18n="sidebar-title">Find Events</h3>
+
+                    <div class="filter-group" style="position:relative;">
+                        <label data-i18n="lbl-search">Search</label>
+                        <input type="text" id="search-input" data-i18n-ph="ph-search"
+                            placeholder="Event Name, Description...">
+                    </div>
+
+                    <div class="filter-group" style="position:relative;">
+                        <label data-i18n="lbl-topic">Topic</label>
+                        <input type="text" id="filter-topic" data-i18n-ph="ph-topic" placeholder="e.g. AI, Healthcare">
+                        <div id="suggestions-topic" class="suggestions-list"></div>
+                    </div>
+
+                    <div class="filter-group" style="position:relative;">
+                        <label data-i18n="lbl-city">City</label>
+                        <input type="text" id="filter-city" data-i18n-ph="ph-city" placeholder="e.g. London">
+                        <div id="suggestions-city" class="suggestions-list"></div>
+                    </div>
+
+                    <div class="filter-group" style="position:relative;">
+                        <label data-i18n="lbl-country">Country</label>
+                        <input type="text" id="filter-country" data-i18n-ph="ph-country" placeholder="e.g. UK">
+                        <div id="suggestions-country" class="suggestions-list"></div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label data-i18n="lbl-month">Month</label>
+                        <input type="month" id="filter-date">
+                    </div>
+
+                    <button class="btn primary" id="btn-reset" data-i18n="btn-reset">Reset Filters</button>
+                </aside>
+
+                <!-- Main Content: Map & List -->
+                <main class="content-area">
+                    <!-- Map Container -->
+                    <div id="map-container" class="glass-panel" style="padding:10px;">
+                        <div id="map"></div>
+                    </div>
+
+                    <!-- List Container -->
+                    <div id="list-container" class="events-list" style="display:none;">
+                        <!-- Events will be injected here -->
+                    </div>
+                </main>
+            </div>
+        </div>
+    </section>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <!-- App Logic -->
+    <script src="assets/locales.js"></script>
+    <script src="assets/background.js"></script>
+    <script src="assets/app.js"></script>
+
+    <script>
+        function scrollToPortal() {
+            // Unlock scroll
+            document.body.classList.remove('no-scroll');
+            // Smoothly scroll to portal
+            setTimeout(() => {
+                document.getElementById('portal-section').scrollIntoView({ behavior: 'smooth' });
+            }, 50);
+        }
+    </script>
+</body>
+
+</html>

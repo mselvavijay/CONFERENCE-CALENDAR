@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# Storage
+storage/uploads/*
+!storage/uploads/.gitkeep
+
+# Local assets (temporarily created)
+frontend/assets/portal-bg.png
+
+# OS
+.DS_Store
+Thumbs.db

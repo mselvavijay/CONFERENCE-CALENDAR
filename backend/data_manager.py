@@ -7,17 +7,33 @@ from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut, GeocoderServiceError
 import time
 
-# Use absolute path relative to this file to ensure it's found in different environments
+# Use absolute path relative to this file
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-DATA_FILE = os.path.join(BASE_DIR, "storage", "events.json")
-INTERESTS_FILE = os.path.join(BASE_DIR, "storage", "UserInterests.xlsx")
+# Vercel environments have a read-only filesystem except for /tmp
+IS_VERCEL = "VERCEL" in os.environ
+
+if IS_VERCEL:
+    STORAGE_DIR = "/tmp/storage"
+    os.makedirs(STORAGE_DIR, exist_ok=True)
+else:
+    STORAGE_DIR = os.path.join(BASE_DIR, "storage")
+
+DATA_FILE = os.path.join(STORAGE_DIR, "events.json")
+INTERESTS_FILE = os.path.join(STORAGE_DIR, "UserInterests.xlsx")
+SEED_DATA_FILE = os.path.join(BASE_DIR, "storage", "events.json")
 
 class DataManager:
     def __init__(self):
         self.events: List[Dict] = []
         self.geocoder = Nominatim(user_agent="conference_portal_app")
         self.geocache = {}  # Cache to avoid repeated API calls
+        
+        # On Vercel, seed the /tmp/storage if it's empty
+        if IS_VERCEL and not os.path.exists(DATA_FILE) and os.path.exists(SEED_DATA_FILE):
+             import shutil
+             shutil.copy2(SEED_DATA_FILE, DATA_FILE)
+             
         self.load_data()
 
     def save_interest(self, user_data: Dict) -> Dict:

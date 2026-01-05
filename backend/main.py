@@ -9,10 +9,15 @@ from backend.data_manager import data_manager
 
 app = FastAPI()
 
-# CORS for local development
+# CORS for production and local development
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://bhconferencecalendar.netlify.app",
+        "https://bhconferencecalendar.vercel.app",
+        "http://localhost:8081",
+        "http://127.0.0.1:8081"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

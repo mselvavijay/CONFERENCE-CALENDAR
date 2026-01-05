@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateUIText(); // Ensure initial text is set
     checkReminders();
     setupNavigation();
+    setupScroll();
 
     // Ensure count is updated on load. 
     // If user specifically wants 0 by default, they might have old test data.
@@ -502,10 +503,8 @@ function setupNavigation() {
         e.preventDefault();
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        // Re-lock after animation
-        setTimeout(() => {
-            document.body.classList.add('no-scroll');
-        }, 800);
+        // No longer re-locking to avoid freezing issues
+        document.body.classList.remove('no-scroll');
 
         // Reset all filter inputs
         searchInput.value = '';
@@ -589,6 +588,30 @@ function updateUIText() {
 
 function getTrans(key) {
     return (translations[currentLang] && translations[currentLang][key]) || key;
+}
+
+// --- Scroll Handling ---
+function setupScroll() {
+    const btnScrollTop = document.getElementById('btn-scroll-top');
+    if (!btnScrollTop) return;
+
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+            btnScrollTop.classList.add('visible');
+        } else {
+            btnScrollTop.classList.remove('visible');
+        }
+
+        // Auto-unlock scroll if user manages to scroll down 
+        // (backup in case they don't click Explore Now)
+        if (window.pageYOffset > 50 && document.body.classList.contains('no-scroll')) {
+            document.body.classList.remove('no-scroll');
+        }
+    });
+
+    btnScrollTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 }
 
 // --- Reminders ---

@@ -73,7 +73,6 @@ section {
     padding-top: 80px;
     align-items: flex-start;
     position: relative;
-    overflow: hidden;
 }
 
 #portal-section::before {
@@ -636,4 +635,36 @@ input:focus {
 
 .marker-blink {
     animation: marker-sync-blink 1s step-end infinite !important;
+}
+
+/* Scroll to Top Button */
+#btn-scroll-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: var(--accent-green);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    display: none;
+    /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    font-size: 1.5rem;
+    transition: transform 0.3s, background 0.3s;
+}
+
+#btn-scroll-top:hover {
+    transform: scale(1.1);
+    background: var(--secondary-color);
+}
+
+#btn-scroll-top.visible {
+    display: flex;
+    animation: fadeIn 0.3s ease-out;
 }

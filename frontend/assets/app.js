@@ -1,6 +1,6 @@
 const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
     ? "http://localhost:8081/api"
-    : "https://conference-calendar-iota.vercel.app/api";
+    : "https://bhconferencecalendar.vercel.app/api";
 
 let allEvents = [];
 let map;

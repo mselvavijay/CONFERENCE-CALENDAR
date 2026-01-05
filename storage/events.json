@@ -1008,24 +1008,6 @@
     "lng": 5.7331
   },
   {
-    "id": "World_Hydrogen_Summit_&_Exhibition_2026-05-19_Rotterdam,_Netherlands",
-    "eventName": "World Hydrogen Summit & Exhibition",
-    "topic": "Green Energy",
-    "startDate": "2026-05-19",
-    "endDate": "2026-05-19",
-    "city": "Rotterdam",
-    "country": "Netherlands",
-    "location_raw": "Rotterdam, Netherlands",
-    "quarter": "Q2 2026",
-    "organizer": "Sustainable Energy Council",
-    "registrationUrl": "https://www.world-hydrogen-summit.com/",
-    "description": "",
-    "tags": "",
-    "price": "TBD",
-    "lat": 51.9225,
-    "lng": 4.4792
-  },
-  {
     "id": "ICGEA_2026_–_Int’l_Conf._on_Green_Energy_and_Applications_2026-03-06_Hanoi,_Vietnam",
     "eventName": "ICGEA 2026 – Int’l Conf. on Green Energy and Applications",
     "topic": "Green Energy",

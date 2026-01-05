@@ -1,6 +1,6 @@
 const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
     ? "http://localhost:8081/api/admin"
-    : "https://conference-calendar-iota.vercel.app/api/admin";
+    : "https://bhconferencecalendar.vercel.app/api/admin";
 
 const authOverlay = document.getElementById('auth-overlay');
 const adminPassInput = document.getElementById('admin-pass');

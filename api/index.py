@@ -16,7 +16,7 @@ app = FastAPI()
 # CORS so Netlify frontend can call the Vercel API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[NETLIFY_ORIGIN],
+    allow_origins=[NETLIFY_ORIGIN, "https://bhconferencecalendar.vercel.app"],
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )

@@ -1,20 +1,8 @@
 {
-    "builds": [
-        {
-            "src": "api/index.py",
-            "use": "@vercel/python",
-            "config": {
-                "includeFiles": [
-                    "storage/**",
-                    "backend/**"
-                ]
-            }
-        }
-    ],
     "rewrites": [
         {
             "source": "/api/(.*)",
-            "destination": "/api/index.py"
+            "destination": "/api"
         }
     ]
 }

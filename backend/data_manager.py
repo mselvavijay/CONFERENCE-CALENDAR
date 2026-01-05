@@ -7,7 +7,9 @@ from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut, GeocoderServiceError
 import time
 
-DATA_FILE = "storage/events.json"
+# Use absolute path relative to this file to ensure it's found in different environments
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_FILE = os.path.join(BASE_DIR, "storage", "events.json")
 
 class DataManager:
     def __init__(self):

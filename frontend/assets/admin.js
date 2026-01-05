@@ -1,4 +1,6 @@
-const API_BASE = "http://localhost:8081/api/admin";
+const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+    ? "http://localhost:8081/api/admin"
+    : "https://conference-calendar-iota.vercel.app/api/admin";
 
 const authOverlay = document.getElementById('auth-overlay');
 const adminPassInput = document.getElementById('admin-pass');
@@ -15,6 +17,7 @@ const uploadSpinner = document.getElementById('upload-spinner');
 const btnReGeocode = document.getElementById('btn-re-geocode');
 const geocodeStatus = document.getElementById('geocode-status');
 const geocodeSpinner = document.getElementById('geocode-spinner');
+const btnDownloadInterests = document.getElementById('btn-download-interests');
 
 // Stats Elements
 const statTotal = document.getElementById('stat-total');
@@ -176,6 +179,16 @@ btnReGeocode.addEventListener('click', async () => {
         geocodeSpinner.style.display = 'none';
         geocodeStatus.textContent = `❌ Network Error: ${e.message}`;
     }
+});
+
+btnDownloadInterests.addEventListener('click', () => {
+    if (!authToken) {
+        handleAuthFail();
+        return;
+    }
+    // Direct link trigger for file download
+    const url = `${API_BASE}/download-interests?passphrase=${authToken}`;
+    window.open(url, '_blank');
 });
 
 function handleAuthFail() {

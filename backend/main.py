@@ -1,7 +1,10 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException, Depends
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Optional, List
+import os
+from fastapi.responses import FileResponse
+from typing import Optional, List, Dict
+from pydantic import BaseModel
 from backend.data_manager import data_manager
 
 app = FastAPI()
@@ -16,6 +19,10 @@ app.add_middleware(
 )
 
 # API Routes
+@app.get("/api")
+async def api_root():
+    return {"status": "ok", "message": "FastAPI Local Server"}
+
 @app.get("/api/events")
 async def get_events():
     return data_manager.get_events()
@@ -71,6 +78,45 @@ async def re_geocode(passphrase: str):
     
     result = data_manager.re_geocode_all()
     return result
+
+class InterestRequest(BaseModel):
+    firstName: str
+    lastName: str
+    username: str
+    email: str
+    role: str
+    city: str
+    country: str
+    eventId: str
+    confirmed: bool
+    consent: bool
+
+@app.post("/api/interest")
+async def save_interest(request: InterestRequest):
+    result = data_manager.save_interest(request.dict())
+    if result["status"] == "error":
+        raise HTTPException(status_code=400, detail=result["message"])
+    return result
+
+@app.get("/api/admin/interests")
+async def get_interests(passphrase: str):
+    ADMIN_SECRET = "admin123"
+    if passphrase != ADMIN_SECRET:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    return data_manager.get_interests()
+
+@app.get("/api/admin/download-interests")
+async def download_interests(passphrase: str):
+    ADMIN_SECRET = "admin123"
+    if passphrase != ADMIN_SECRET:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    file_path = data_manager.get_interests_file()
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="No interest file found yet.")
+        
+    return FileResponse(file_path, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', filename="UserInterests.xlsx")
+
 
 # Serve Frontend
 # This must be last to avoid catching API routes

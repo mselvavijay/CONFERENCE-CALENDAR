@@ -1,4 +1,6 @@
-const API_BASE = "https://conference-calendar-iota.vercel.app/api";
+const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+    ? "http://localhost:8081/api"
+    : "https://conference-calendar-iota.vercel.app/api";
 
 let allEvents = [];
 let map;
@@ -111,8 +113,8 @@ function renderEvents(events) {
             </div>
             <div class="event-actions">
                 <a href="${event.registrationUrl}" target="_blank" class="btn primary">${getTrans('btn-register')}</a>
-                <button class="btn" onclick="toggleMyEvent('${event.id}')">
-                   ${isSaved(event.id) ? getTrans('btn-remove') : getTrans('btn-save')}
+                <button class="btn btn-interest" data-id="${event.id}">
+                   ${isSaved(event.id) ? 'Interest Registered' : 'Show Interest'}
                 </button>
             </div>
         `;
@@ -162,10 +164,13 @@ function renderEvents(events) {
                         ${event.description}
                     </div>` : ''}
 
-                    <div style="margin-top: 10px;">
-                        <a href="${event.registrationUrl}" target="_blank" class="btn primary" style="display:inline-block; padding:7px 14px; font-size:0.85em; text-decoration:none; border-radius:4px; text-align:center; font-weight:600; width: 100%; box-sizing: border-box; background:#3498db; color:white;">
+                    <div style="margin-top: 10px; display:flex; gap:5px;">
+                        <a href="${event.registrationUrl}" target="_blank" class="btn primary" style="flex:1; padding:7px 5px; font-size:0.85em; text-decoration:none; border-radius:4px; text-align:center; font-weight:600; background:#3498db; color:white;">
                             ${getTrans('btn-register')}
                         </a>
+                        <button class="btn btn-interest" data-id="${event.id}" style="flex:1; padding:7px 5px; font-size:0.85em; border-radius:4px; cursor:pointer;">
+                            ${isSaved(event.id) ? 'Registered' : 'Interest'}
+                        </button>
                     </div>
                 </div>
             `;
@@ -177,7 +182,23 @@ function renderEvents(events) {
         });
         markers.push(marker);
     });
+
+    // Re-attach listeners for dynamically created list items
+    // (Note: Map popups are harder because they are creating on the fly by Leaflet, 
+    // better to delegate from document)
 }
+
+// Global Event Delegation for Dynamic Elements
+document.addEventListener('click', (e) => {
+    // Check if clicked element or parent is the interest button
+    const btn = e.target.closest('.btn-interest');
+    if (btn) {
+        const id = btn.getAttribute('data-id');
+        if (id) {
+            handleShowInterest(id);
+        }
+    }
+});
 
 function checkIsUpcoming(startDateStr) {
     if (!startDateStr) return false;
@@ -330,22 +351,98 @@ function isSaved(id) {
     return getSavedEvents().includes(id);
 }
 
-function toggleMyEvent(id) {
-    let saved = getSavedEvents();
-    if (saved.includes(id)) {
-        saved = saved.filter(i => i !== id);
-    } else {
-        saved.push(id);
+function handleShowInterest(id) {
+    if (isSaved(id)) {
+        alert("You have already registered interest for this event.");
+        return;
     }
-    localStorage.setItem('myEvents', JSON.stringify(saved));
-    updateMyEventsCount();
-    // Re-render to update button state
-    // Note: Re-rendering whole list might reset scroll, ideally just update text but this is fine for MVP
-    const currentFilters = allEvents.filter(ev => document.getElementById(ev.id)); // Hacky check if visible? 
-    // Actually easier to just update the specific button if we had ID refs, 
-    // but allow full re-render for simplicity 
-    filterEvents();
+    const event = allEvents.find(e => e.id === id);
+    if (event) {
+        openInterestModal(event);
+    }
 }
+window.handleShowInterest = handleShowInterest;
+
+// --- Interest Modal Logic ---
+const interestModal = document.getElementById('interest-modal');
+const interestForm = document.getElementById('interest-form');
+const closeModalBtn = document.getElementById('close-modal');
+
+if (closeModalBtn) {
+    closeModalBtn.addEventListener('click', closeInterestModal);
+}
+
+function openInterestModal(event) {
+    document.getElementById('modal-event-name').textContent = event.eventName;
+    document.getElementById('modal-event-id').value = event.id;
+    interestModal.style.display = 'block';
+}
+
+function closeInterestModal() {
+    interestModal.style.display = 'none';
+    interestForm.reset();
+}
+
+interestForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const submitBtn = interestForm.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = "Submitting...";
+    submitBtn.disabled = true;
+
+    const data = {
+        firstName: document.getElementById('int-fname').value,
+        lastName: document.getElementById('int-lname').value,
+        username: document.getElementById('int-username').value,
+        email: document.getElementById('int-email').value,
+        role: document.getElementById('int-role').value,
+        city: document.getElementById('int-city').value,
+        country: document.getElementById('int-country').value,
+        eventId: document.getElementById('modal-event-id').value,
+        confirmed: document.getElementById('int-confirm').checked,
+        consent: document.getElementById('int-consent').checked
+    };
+
+    try {
+        const response = await fetch(`${API_BASE}/interest`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            alert('Interest registered successfully!');
+            saveLocally(data.eventId);
+            closeInterestModal();
+        } else {
+            alert('Error: ' + result.message);
+        }
+    } catch (err) {
+        console.error("Submission error:", err);
+        alert('Failed to submit interest. Please try again.');
+    } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+    }
+});
+
+function saveLocally(id) {
+    let saved = getSavedEvents();
+    if (!saved.includes(id)) {
+        saved.push(id);
+        localStorage.setItem('myEvents', JSON.stringify(saved));
+        updateMyEventsCount();
+        filterEvents(); // Re-render to update button state
+    }
+}
+
+/* 
+   Deprecated regular toggle. 
+   Keeping helper utils but removing old toggleMyEvent 
+*/
 
 function updateMyEventsCount() {
     myEventsCount.textContent = getSavedEvents().length;

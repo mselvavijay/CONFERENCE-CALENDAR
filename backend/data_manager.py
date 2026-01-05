@@ -9,7 +9,9 @@ import time
 
 # Use absolute path relative to this file to ensure it's found in different environments
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 DATA_FILE = os.path.join(BASE_DIR, "storage", "events.json")
+INTERESTS_FILE = os.path.join(BASE_DIR, "storage", "UserInterests.xlsx")
 
 class DataManager:
     def __init__(self):
@@ -17,6 +19,82 @@ class DataManager:
         self.geocoder = Nominatim(user_agent="conference_portal_app")
         self.geocache = {}  # Cache to avoid repeated API calls
         self.load_data()
+
+    def save_interest(self, user_data: Dict) -> Dict:
+        """
+        Save user interest to Excel.
+        Expected user_data: { firstName, lastName, username, email, role, city, country, eventId, confirmed, consent }
+        """
+        try:
+            # 1. Prepare Data
+            event_id = user_data.get("eventId")
+            event = next((e for e in self.events if e["id"] == event_id), None)
+            
+            if not event:
+                return {"status": "error", "message": "Event not found"}
+
+            # Event Price - Placeholder as it's not in current schema, defaulting to 'TBD' or pulling if added later
+            event_price = event.get("price", "TBD")
+            
+            record = {
+                "First Name": user_data.get("firstName"),
+                "Last Name": user_data.get("lastName"),
+                "BH Username": user_data.get("username"),
+                "BH Email": user_data.get("email"),
+                "Role": user_data.get("role"),
+                "City": user_data.get("city"),
+                "Country": user_data.get("country"),
+                "Event Name": event.get("eventName"),
+                "Event Price": event_price,
+                "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            }
+
+            # 2. Load or Create DataFrame
+            if os.path.exists(INTERESTS_FILE):
+                df = pd.read_excel(INTERESTS_FILE)
+            else:
+                df = pd.DataFrame(columns=["First Name", "Last Name", "BH Username", "BH Email", "Role", "City", "Country", "Event Name", "Event Price", "Timestamp"])
+
+            # 3. Duplicate Check (Email OR Username + Event Name)
+            # Check if user already registered for THIS event
+            is_duplicate = False
+            if not df.empty:
+                # Filter for this event
+                event_mask = df["Event Name"] == record["Event Name"]
+                user_mask = (df["BH Email"] == record["BH Email"]) | (df["BH Username"] == record["BH Username"])
+                
+                if not df[event_mask & user_mask].empty:
+                    is_duplicate = True
+
+            if is_duplicate:
+                return {"status": "error", "message": "You have already registered interest for this event."}
+
+            # 4. Append and Save
+            # Using concat instead of append (deprecated)
+            new_row = pd.DataFrame([record])
+            df = pd.concat([df, new_row], ignore_index=True)
+            
+            # Ensure dir exists
+            os.makedirs(os.path.dirname(INTERESTS_FILE), exist_ok=True)
+            df.to_excel(INTERESTS_FILE, index=False)
+
+            return {"status": "success", "message": "Interest registered successfully!"}
+
+        except Exception as e:
+            print(f"Error saving interest: {e}")
+            return {"status": "error", "message": str(e)}
+
+    def get_interests(self) -> List[Dict]:
+        if os.path.exists(INTERESTS_FILE):
+            try:
+                df = pd.read_excel(INTERESTS_FILE)
+                return df.fillna("").to_dict(orient="records")
+            except Exception:
+                return []
+        return []
+    
+    def get_interests_file(self) -> str:
+        return INTERESTS_FILE
 
     def load_data(self):
         if os.path.exists(DATA_FILE):
@@ -57,7 +135,7 @@ class DataManager:
         
         id_str = f"{clean_name}_{clean_date}_{clean_loc}".replace(" ", "_")
         # Remove characters that might be problematic in URLs or IDs
-        invalid_chars = '<>:"/\\|?*'
+        invalid_chars = '<>:"/\\|?*\'`'
         for char in invalid_chars:
             id_str = id_str.replace(char, "")
         return id_str

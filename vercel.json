@@ -1,17 +1,18 @@
 {
-    "functions": {
-        "api/main.py": {
-            "includeFiles": "storage/events.json"
-        }
-    },
+    "$schema": "https://openapi.vercel.sh/vercel.json",
+    "version": 2,
     "rewrites": [
         {
             "source": "/api",
-            "destination": "api/main.py"
+            "destination": "/api/main.py"
         },
         {
-            "source": "/api/(.*)",
-            "destination": "api/main.py"
+            "source": "/api/events",
+            "destination": "/api/main.py"
+        },
+        {
+            "source": "/api/upload",
+            "destination": "/api/main.py"
         }
     ]
 }

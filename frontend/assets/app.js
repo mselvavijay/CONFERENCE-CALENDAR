@@ -114,7 +114,7 @@ function renderEvents(events) {
             <div class="event-actions">
                 <a href="${event.registrationUrl}" target="_blank" class="btn primary">${getTrans('btn-register')}</a>
                 <button class="btn btn-interest" data-id="${event.id}">
-                   ${isSaved(event.id) ? 'Interest Registered' : 'Show Interest'}
+                   ${isSaved(event.id) ? 'Interested' : 'Interested'}
                 </button>
             </div>
         `;
@@ -169,7 +169,7 @@ function renderEvents(events) {
                             ${getTrans('btn-register')}
                         </a>
                         <button class="btn btn-interest" data-id="${event.id}" style="flex:1; padding:7px 5px; font-size:0.85em; border-radius:4px; cursor:pointer;">
-                            ${isSaved(event.id) ? 'Registered' : 'Interest'}
+                            ${isSaved(event.id) ? 'Interested' : 'Interested'}
                         </button>
                     </div>
                 </div>

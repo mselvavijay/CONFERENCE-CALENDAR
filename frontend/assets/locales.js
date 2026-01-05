@@ -17,7 +17,7 @@ const translations = {
         "ph-city": "e.g. London",
         "ph-country": "e.g. UK",
         "btn-register": "View Details",
-        "btn-save": "Show Interest",
+        "btn-save": "Interested",
         "btn-remove": "Remove",
         "msg-no-events": "No events saved by you! Please add some events."
     },

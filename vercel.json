@@ -1,10 +1,8 @@
 {
     "version": 2,
     "functions": {
-        "api/*.py": {
-            "includeFiles": [
-                "storage/**"
-            ]
+        "api/index.py": {
+            "includeFiles": "storage/events.json"
         }
     },
     "rewrites": [

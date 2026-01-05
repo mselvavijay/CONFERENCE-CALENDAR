@@ -1,7 +1,7 @@
 const translations = {
     "en": {
         "nav-home": "Home",
-        "nav-my-events": "My Interests",
+        "nav-my-events": "My Events",
         "nav-admin": "Admin",
         "sidebar-title": "Find Events",
         "lbl-search": "Search",
@@ -18,6 +18,8 @@ const translations = {
         "ph-country": "e.g. UK",
         "btn-register": "View Details",
         "btn-save": "Interested",
+        "msg-saved": "Thank you! Your interest has been noted.",
+        "msg-already-saved": "You are already interested in this event.",
         "btn-remove": "Remove",
         "msg-no-events": "No events saved by you! Please add some events."
     },

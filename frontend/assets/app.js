@@ -114,7 +114,7 @@ function renderEvents(events) {
             <div class="event-actions">
                 <a href="${event.registrationUrl}" target="_blank" class="btn primary">${getTrans('btn-register')}</a>
                 <button class="btn btn-interest" data-id="${event.id}">
-                   ${isSaved(event.id) ? 'Interested' : 'Interested'}
+                   ${getTrans('btn-save')}
                 </button>
             </div>
         `;
@@ -169,7 +169,7 @@ function renderEvents(events) {
                             ${getTrans('btn-register')}
                         </a>
                         <button class="btn btn-interest" data-id="${event.id}" style="flex:1; padding:7px 5px; font-size:0.85em; border-radius:4px; cursor:pointer;">
-                            ${isSaved(event.id) ? 'Interested' : 'Interested'}
+                            ${getTrans('btn-save')}
                         </button>
                     </div>
                 </div>
@@ -356,7 +356,7 @@ function isSaved(id) {
 window.handleShowInterest = function (id) {
     console.log("handleShowInterest called for ID:", id);
     if (isSaved(id)) {
-        alert("You have already registered interest for this event.");
+        alert(getTrans('msg-already-saved'));
         return;
     }
     const event = allEvents.find(e => e.id === id);
@@ -428,7 +428,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = await response.json();
 
                 if (result.status === 'success') {
-                    alert('Interest registered successfully!');
+                    alert(getTrans('msg-saved'));
                     saveLocally(data.eventId);
                     closeInterestModal();
                 } else {

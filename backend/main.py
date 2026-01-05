@@ -19,15 +19,6 @@ app.add_middleware(
 )
 
 # API Routes
-@app.get("/")
-async def root():
-    return {"status": "ok", "message": "Backend is running"}
-
-@app.get("/api")
-@app.get("/api/")
-async def api_root():
-    return {"status": "ok", "message": "FastAPI Server"}
-
 @app.get("/api/events")
 async def get_events():
     return data_manager.get_events()

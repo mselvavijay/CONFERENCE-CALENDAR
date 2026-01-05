@@ -17,7 +17,8 @@ app.add_middleware(
         "https://bhconfcalendar.netlify.app",
         "https://bhconferencecalendar.vercel.app",
         "http://localhost:8081",
-        "http://127.0.0.1:8081"
+        "http://127.0.0.1:8081",
+        "null"
     ],
     allow_credentials=True,
     allow_methods=["*"],

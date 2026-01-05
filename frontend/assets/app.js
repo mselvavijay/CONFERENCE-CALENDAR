@@ -542,8 +542,12 @@ function setupNavigation() {
     navMyEvents.addEventListener('click', (e) => {
         e.preventDefault();
         filteringToSaved = true;
+        filteringToUpcoming = false; // Reset upcoming when viewing all interests
+
         navMyEvents.classList.add('active');
         navHome.classList.remove('active');
+        btnUpcoming.classList.remove('primary');
+        updateUpcomingButtonStyle();
 
         // Show List View layout without triggering the reset logic in btnViewList
         mapContainer.style.display = 'none';

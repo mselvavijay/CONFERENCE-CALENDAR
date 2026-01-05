@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8081/api";
+const API_BASE = "https://conference-calendar-iota.vercel.app/api";
 
 let allEvents = [];
 let map;

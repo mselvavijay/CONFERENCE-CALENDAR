@@ -12,14 +12,7 @@ app = FastAPI()
 # CORS for production and local development
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://bhconferencecalendar.netlify.app",
-        "https://bhconfcalendar.netlify.app",
-        "https://bhconferencecalendar.vercel.app",
-        "http://localhost:8081",
-        "http://127.0.0.1:8081",
-        "null"
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

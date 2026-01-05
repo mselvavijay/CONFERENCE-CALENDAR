@@ -1,7 +1,7 @@
 const translations = {
     "en": {
         "nav-home": "Home",
-        "nav-my-events": "My Events",
+        "nav-my-events": "My Interests",
         "nav-admin": "Admin",
         "sidebar-title": "Find Events",
         "lbl-search": "Search",
@@ -17,7 +17,8 @@ const translations = {
         "ph-city": "e.g. London",
         "ph-country": "e.g. UK",
         "btn-register": "View Details",
-        "btn-save": "Interested",
+        "btn-save": "Show Interest",
+        "btn-saved": "Interested",
         "msg-saved": "Thank you! Your interest has been noted.",
         "msg-already-saved": "You are already interested in this event.",
         "btn-remove": "Remove",

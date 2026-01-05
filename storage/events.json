@@ -13,6 +13,7 @@
     "registrationUrl": "https://www.ieeesmc.org/cai-2026/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 37.1773,
     "lng": -3.5986
   },
@@ -30,6 +31,7 @@
     "registrationUrl": "https://virtual.aistats.org/Conferences/2026",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 35.7595,
     "lng": -5.8339
   },
@@ -47,6 +49,7 @@
     "registrationUrl": "https://datainnovationsummit.com/region/nordics/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 59.3293,
     "lng": 18.0686
   },
@@ -64,6 +67,7 @@
     "registrationUrl": "https://mindspaceconferences.com/artificialintelligence/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 35.6762,
     "lng": 139.6503
   },
@@ -81,6 +85,7 @@
     "registrationUrl": "https://events.economist.com/energy-transition-summit/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 51.5072,
     "lng": -0.1276
   },
@@ -98,6 +103,7 @@
     "registrationUrl": "https://www.ceraweek.com/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 29.7604,
     "lng": -95.3698
   },
@@ -115,6 +121,7 @@
     "registrationUrl": "https://futureenergymeet.com/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 29.7604,
     "lng": -95.3698
   },
@@ -132,6 +139,7 @@
     "registrationUrl": "https://storagesummit.solarenergyevents.com/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 51.5072,
     "lng": -0.1276
   },
@@ -149,6 +157,7 @@
     "registrationUrl": "https://events.reutersevents.com/energy-transition/global-energy-transition-new-york",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 40.7128,
     "lng": -74.006
   },
@@ -166,6 +175,7 @@
     "registrationUrl": "https://worldenergycongress.org/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 24.7136,
     "lng": 46.6753
   },
@@ -183,6 +193,7 @@
     "registrationUrl": "https://www.renewableenergyconference.org/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 41.8719,
     "lng": 12.5674
   },
@@ -200,6 +211,7 @@
     "registrationUrl": "https://www.renewableenergyconference.org/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 34.6937,
     "lng": 135.5023
   },
@@ -217,6 +229,7 @@
     "registrationUrl": "https://www.rsaconference.com/usa",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 37.7749,
     "lng": -122.4194
   },
@@ -234,6 +247,7 @@
     "registrationUrl": "https://www.blackhat.com/asia-25/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 1.3521,
     "lng": 103.8198
   },
@@ -251,6 +265,7 @@
     "registrationUrl": "https://www.infosecurityeurope.com/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 51.5072,
     "lng": -0.1276
   },
@@ -268,6 +283,7 @@
     "registrationUrl": "https://www.gartner.com/en/conferences/na/security-risk-management-us",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 38.782,
     "lng": -77.0176
   },
@@ -285,6 +301,7 @@
     "registrationUrl": "https://acc2026.a2c2.org/?utm_source=chatgpt.com",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 29.9511,
     "lng": -90.0715
   },
@@ -302,6 +319,7 @@
     "registrationUrl": "https://www.ifac2026.org/?utm_source=chatgpt.com",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 35.1796,
     "lng": 129.0756
   },
@@ -319,6 +337,7 @@
     "registrationUrl": "https://www.ieeecss.org/event/65th-ieee-conference-decision-and-control",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 21.3069,
     "lng": -157.8583
   },
@@ -336,6 +355,7 @@
     "registrationUrl": "https://ieeecss.org/event/conference-control-technology-and-applications-0",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 56.1304,
     "lng": -106.3468
   },
@@ -353,6 +373,7 @@
     "registrationUrl": "https://www.iceeeconf.com/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 28.2282,
     "lng": 112.9388
   },
@@ -370,6 +391,7 @@
     "registrationUrl": "https://robotics.pagesconferences.org/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 35.6762,
     "lng": 139.6503
   },
@@ -387,6 +409,7 @@
     "registrationUrl": "https://wisdomconferences.com/robotics/registration/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 35.6762,
     "lng": 139.6503
   },
@@ -404,6 +427,7 @@
     "registrationUrl": "https://www.tradeindia.com/tradeshows/137570/automation-expo-south-2026.html",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 13.0827,
     "lng": 80.2707
   },
@@ -421,6 +445,7 @@
     "registrationUrl": "https://in.linkedin.com/showcase/automation-india-expo/#:~:text=About%20us,execution%20and%20technology%20shapes%20tomorrow.",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 19.076,
     "lng": 72.8777
   },
@@ -438,6 +463,7 @@
     "registrationUrl": "https://wisdomconferences.com/robotics/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 35.6762,
     "lng": 139.6503
   },
@@ -455,6 +481,7 @@
     "registrationUrl": "https://ifr.org/event/mtm-robotics-2026-international-conference",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 45.9432,
     "lng": 24.9668
   },
@@ -472,6 +499,7 @@
     "registrationUrl": "http://apos2026.com/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": -33.8688,
     "lng": 151.2093
   },
@@ -489,6 +517,7 @@
     "registrationUrl": "https://session.cigre.org/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 48.8566,
     "lng": 2.3522
   },
@@ -506,6 +535,7 @@
     "registrationUrl": "https://pes-gm.org/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 56.1304,
     "lng": -106.3468
   },
@@ -523,6 +553,7 @@
     "registrationUrl": "https://conferenceindex.org/event/international-conference-on-electric-machines-icem-2026-march-london-gb",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 51.5072,
     "lng": -0.1276
   },
@@ -540,6 +571,7 @@
     "registrationUrl": "https://www.showsbee.com/fairs/91711-IEEE-IECON-2026.html",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 25.276987,
     "lng": 51.520008
   },
@@ -557,6 +589,7 @@
     "registrationUrl": "https://www.ai-expo.net/global/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 51.5072,
     "lng": -0.1276
   },
@@ -574,6 +607,7 @@
     "registrationUrl": "https://arsss.org/Conference/41771/ICBDAIT/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": -8.3405,
     "lng": 115.092
   },
@@ -591,6 +625,7 @@
     "registrationUrl": "https://www.etit.tu-darmstadt.de/rcs/fachgebiet_rcs/news_archive_rcs/news_details_282304.en.jsp#:~:text=May%2024%2D28%2C%202026%20in,%2C%20localization%2C%20and%20sensing%20applications.",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 55.8642,
     "lng": -4.2518
   },
@@ -608,6 +643,7 @@
     "registrationUrl": "https://infocom2026.ieee-infocom.org/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 35.6762,
     "lng": 139.6503
   },
@@ -625,6 +661,7 @@
     "registrationUrl": "https://nachhaltigwirtschaften.at/en/events/2026/20260416-isec.php",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 47.0707,
     "lng": 15.4395
   },
@@ -642,6 +679,7 @@
     "registrationUrl": "https://www.carboncaptureapac.com/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": -37.8136,
     "lng": 144.9631
   },
@@ -659,6 +697,7 @@
     "registrationUrl": "https://decarboncongress.com/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 48.1197,
     "lng": 16.3333
   },
@@ -676,6 +715,7 @@
     "registrationUrl": "https://icml.cc/Conferences/2025",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 48.21,
     "lng": 16.3738
   },
@@ -693,6 +733,7 @@
     "registrationUrl": "https://www.conferencealert.com/eventdetail/1429319",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 48.1351,
     "lng": 11.582
   },
@@ -710,6 +751,7 @@
     "registrationUrl": "http://artee.theides.org/2024/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 32.7767,
     "lng": -96.797
   },
@@ -727,6 +769,7 @@
     "registrationUrl": "https://www.ceepe.net/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 32.0603,
     "lng": 118.7969
   },
@@ -744,6 +787,7 @@
     "registrationUrl": "https://easychair.org/cfp/CSPE2026",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 31.8206,
     "lng": 117.2272
   },
@@ -761,6 +805,7 @@
     "registrationUrl": "https://event.asme.org/Turbo-Expo",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 41.8719,
     "lng": 12.5674
   },
@@ -778,6 +823,7 @@
     "registrationUrl": "https://event.asme.org/PVP#:~:text=Pressure%20Vessels%20&%20Piping%C2%AE%20Conference,Non%2DDestructive%20Examination",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 33.8366,
     "lng": -117.9143
   },
@@ -795,6 +841,7 @@
     "registrationUrl": "https://onestopesg.com/esg-events/carbon-capture-summit-2026",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 51.5072,
     "lng": -0.1276
   },
@@ -812,6 +859,7 @@
     "registrationUrl": "https://ccusevent.org/2026/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 31.9686,
     "lng": -99.9018
   },
@@ -829,6 +877,7 @@
     "registrationUrl": "https://www.world-hydrogen-summit.com/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 51.9225,
     "lng": 4.4792
   },
@@ -846,6 +895,7 @@
     "registrationUrl": "https://whec2026.org/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 1.3521,
     "lng": 103.8198
   },
@@ -863,6 +913,7 @@
     "registrationUrl": "https://gh2summit.com/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 28.6139,
     "lng": 77.209
   },
@@ -880,6 +931,7 @@
     "registrationUrl": "https://www.uef.fi/fi/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 62.601,
     "lng": 29.7636
   },
@@ -897,6 +949,7 @@
     "registrationUrl": "https://www.enlit.world/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 50.1109,
     "lng": 8.6821
   },
@@ -914,6 +967,7 @@
     "registrationUrl": "https://ieeet-d.org/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 32.7767,
     "lng": -96.797
   },
@@ -931,6 +985,7 @@
     "registrationUrl": "https://www.roboticsandautomation.co.uk/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 52.4862,
     "lng": -1.8904
   },
@@ -948,8 +1003,27 @@
     "registrationUrl": "https://eu-robotics.net/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 58.969,
     "lng": 5.7331
+  },
+  {
+    "id": "World_Hydrogen_Summit_&_Exhibition_2026-05-19_Rotterdam,_Netherlands",
+    "eventName": "World Hydrogen Summit & Exhibition",
+    "topic": "Green Energy",
+    "startDate": "2026-05-19",
+    "endDate": "2026-05-19",
+    "city": "Rotterdam",
+    "country": "Netherlands",
+    "location_raw": "Rotterdam, Netherlands",
+    "quarter": "Q2 2026",
+    "organizer": "Sustainable Energy Council",
+    "registrationUrl": "https://www.world-hydrogen-summit.com/",
+    "description": "",
+    "tags": "",
+    "price": "TBD",
+    "lat": 51.9225,
+    "lng": 4.4792
   },
   {
     "id": "ICGEA_2026_–_Int’l_Conf._on_Green_Energy_and_Applications_2026-03-06_Hanoi,_Vietnam",
@@ -965,6 +1039,7 @@
     "registrationUrl": "https://www.icgea.org/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 21.0285,
     "lng": 105.8542
   },
@@ -982,6 +1057,7 @@
     "registrationUrl": "https://aaai.org/conference/aaai/aaai-26/",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 1.3521,
     "lng": 103.8198
   },
@@ -999,6 +1075,7 @@
     "registrationUrl": "https://en.wikipedia.org/wiki/AI_Impact_Summit",
     "description": "",
     "tags": "",
+    "price": "TBD",
     "lat": 28.6139,
     "lng": 77.209
   }

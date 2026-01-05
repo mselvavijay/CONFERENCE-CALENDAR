@@ -193,9 +193,10 @@ document.addEventListener('click', (e) => {
     // Check if clicked element or parent is the interest button
     const btn = e.target.closest('.btn-interest');
     if (btn) {
+        console.log("Button clicked:", btn);
         const id = btn.getAttribute('data-id');
         if (id) {
-            handleShowInterest(id);
+            window.handleShowInterest(id);
         }
     }
 });
@@ -351,7 +352,9 @@ function isSaved(id) {
     return getSavedEvents().includes(id);
 }
 
-function handleShowInterest(id) {
+// Make handleShowInterest globally accessible
+window.handleShowInterest = function (id) {
+    console.log("handleShowInterest called for ID:", id);
     if (isSaved(id)) {
         alert("You have already registered interest for this event.");
         return;
@@ -359,73 +362,86 @@ function handleShowInterest(id) {
     const event = allEvents.find(e => e.id === id);
     if (event) {
         openInterestModal(event);
+    } else {
+        console.error("Event not found for ID:", id);
     }
-}
-window.handleShowInterest = handleShowInterest;
+};
 
 // --- Interest Modal Logic ---
-const interestModal = document.getElementById('interest-modal');
-const interestForm = document.getElementById('interest-form');
-const closeModalBtn = document.getElementById('close-modal');
-
-if (closeModalBtn) {
-    closeModalBtn.addEventListener('click', closeInterestModal);
-}
-
 function openInterestModal(event) {
-    document.getElementById('modal-event-name').textContent = event.eventName;
-    document.getElementById('modal-event-id').value = event.id;
-    interestModal.style.display = 'block';
+    const modal = document.getElementById('interest-modal');
+    const nameLabel = document.getElementById('modal-event-name');
+    const idInput = document.getElementById('modal-event-id');
+
+    if (modal && nameLabel && idInput) {
+        nameLabel.textContent = event.eventName;
+        idInput.value = event.id;
+        modal.style.display = 'flex'; // Changed to flex to match new CSS
+    }
 }
 
 function closeInterestModal() {
-    interestModal.style.display = 'none';
-    interestForm.reset();
+    const modal = document.getElementById('interest-modal');
+    const form = document.getElementById('interest-form');
+    if (modal) modal.style.display = 'none';
+    if (form) form.reset();
 }
 
-interestForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
+// Initialize Modal Listeners
+document.addEventListener('DOMContentLoaded', () => {
+    const interestForm = document.getElementById('interest-form');
+    const closeModalBtn = document.getElementById('close-modal');
 
-    const submitBtn = interestForm.querySelector('button[type="submit"]');
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = "Submitting...";
-    submitBtn.disabled = true;
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', closeInterestModal);
+    }
 
-    const data = {
-        firstName: document.getElementById('int-fname').value,
-        lastName: document.getElementById('int-lname').value,
-        username: document.getElementById('int-username').value,
-        email: document.getElementById('int-email').value,
-        role: document.getElementById('int-role').value,
-        city: document.getElementById('int-city').value,
-        country: document.getElementById('int-country').value,
-        eventId: document.getElementById('modal-event-id').value,
-        confirmed: document.getElementById('int-confirm').checked,
-        consent: document.getElementById('int-consent').checked
-    };
+    if (interestForm) {
+        interestForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-    try {
-        const response = await fetch(`${API_BASE}/interest`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
+            const submitBtn = interestForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = "Submitting...";
+            submitBtn.disabled = true;
+
+            const data = {
+                firstName: document.getElementById('int-fname').value,
+                lastName: document.getElementById('int-lname').value,
+                username: document.getElementById('int-username').value,
+                email: document.getElementById('int-email').value,
+                role: document.getElementById('int-role').value,
+                city: document.getElementById('int-city').value,
+                country: document.getElementById('int-country').value,
+                eventId: document.getElementById('modal-event-id').value,
+                confirmed: document.getElementById('int-confirm').checked,
+                consent: document.getElementById('int-consent').checked
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/interest`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    alert('Interest registered successfully!');
+                    saveLocally(data.eventId);
+                    closeInterestModal();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (err) {
+                console.error("Submission error:", err);
+                alert('Failed to submit interest. Please try again.');
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
         });
-
-        const result = await response.json();
-
-        if (result.status === 'success') {
-            alert('Interest registered successfully!');
-            saveLocally(data.eventId);
-            closeInterestModal();
-        } else {
-            alert('Error: ' + result.message);
-        }
-    } catch (err) {
-        console.error("Submission error:", err);
-        alert('Failed to submit interest. Please try again.');
-    } finally {
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
     }
 });
 

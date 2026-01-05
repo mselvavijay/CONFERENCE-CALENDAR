@@ -258,6 +258,7 @@ class DataManager:
                 elif "location" in c_lower: col_map["location"] = col
                 elif "agencies" in c_lower: col_map["agencies"] = col
                 elif "quarter" in c_lower: col_map["quarter"] = col
+                elif "price" in c_lower or "cost" in c_lower or "budget" in c_lower: col_map["price"] = col
                 elif c_str.startswith("Unnamed"): 
                     # Assuming the unnamed column after location is the link
                     # For safety, we might check if the content looks like a URL later, 
@@ -389,6 +390,7 @@ class DataManager:
                     "registrationUrl": link if link else "#",
                     "description": "", # No description column mentioned?
                     "tags": "",
+                    "price": get_val("price", "TBD"),
                     "lat": coords["lat"] if coords else None,
                     "lng": coords["lng"] if coords else None
                 }

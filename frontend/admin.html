@@ -67,10 +67,34 @@
 
             <!-- Interest Data Area -->
             <div class="glass-panel" style="padding: 20px; margin-top: 20px;">
-                <h2>Interest Data</h2>
-                <p style="margin-bottom:20px; opacity:0.8;">Download the list of users who have shown interest in
-                    events.</p>
-                <button class="btn primary" id="btn-download-interests">Download Interests Report (.xlsx)</button>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <h2>Interest Submissions</h2>
+                    <button class="btn primary" id="btn-download-interests">Download Report (.xlsx)</button>
+                </div>
+
+                <div
+                    style="overflow-x: auto; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                    <table style="width:100%; border-collapse: collapse; font-size: 0.9rem; text-align: left;">
+                        <thead style="background: rgba(76, 175, 80, 0.2); color: #4ade80;">
+                            <tr>
+                                <th style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1);">User</th>
+                                <th style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1);">Email / ID
+                                </th>
+                                <th style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1);">Location</th>
+                                <th style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1);">Event</th>
+                                <th style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1);">Price</th>
+                                <th style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1);">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="interests-table-body">
+                            <!-- Rows will be injected here -->
+                            <tr>
+                                <td colspan="6" style="padding: 20px; text-align: center; opacity: 0.6;">Loading data...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- Re-Geocode Area -->

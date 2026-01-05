@@ -270,6 +270,10 @@ function setupFilters() {
     });
 
     btnUpcoming.addEventListener('click', () => {
+        filteringToSaved = false; // Reset interests when switching to main views
+        navHome.classList.add('active');
+        navMyEvents.classList.remove('active');
+
         filteringToUpcoming = !filteringToUpcoming;
         updateUpcomingButtonStyle();
         filterEvents();
@@ -466,20 +470,30 @@ function updateMyEventsCount() {
 
 // --- View Toggles ---
 btnViewMap.addEventListener('click', () => {
+    filteringToSaved = false;
+    navHome.classList.add('active');
+    navMyEvents.classList.remove('active');
+
     mapContainer.style.display = 'block';
     listContainer.style.display = 'none';
     btnViewMap.classList.add('primary');
     btnViewList.classList.remove('primary');
     updateUpcomingButtonStyle();
+    filterEvents(); // Re-filter without saved filter
     setTimeout(() => map.invalidateSize(), 100);
 });
 
 btnViewList.addEventListener('click', () => {
+    filteringToSaved = false;
+    navHome.classList.add('active');
+    navMyEvents.classList.remove('active');
+
     mapContainer.style.display = 'none';
     listContainer.style.display = 'flex';
     btnViewList.classList.add('primary');
     btnViewMap.classList.remove('primary');
     updateUpcomingButtonStyle();
+    filterEvents(); // Re-filter without saved filter
 });
 
 // --- Navigation ---
@@ -530,11 +544,14 @@ function setupNavigation() {
         filteringToSaved = true;
         navMyEvents.classList.add('active');
         navHome.classList.remove('active');
-        filterEvents();
 
-        // Switch to list view automatically if in map view? 
-        // Optional, but usually list is better for precise 'My Events'
-        btnViewList.click();
+        // Show List View layout without triggering the reset logic in btnViewList
+        mapContainer.style.display = 'none';
+        listContainer.style.display = 'flex';
+        btnViewList.classList.add('primary');
+        btnViewMap.classList.remove('primary');
+
+        filterEvents();
     });
 }
 

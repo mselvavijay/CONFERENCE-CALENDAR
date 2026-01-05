@@ -20,6 +20,7 @@ const mapContainer = document.getElementById('map-container');
 const listContainer = document.getElementById('list-container');
 const navHome = document.getElementById('nav-home');
 const navMyEvents = document.getElementById('nav-my-events');
+const navExplore = document.getElementById('nav-explore');
 const myEventsCount = document.getElementById('my-events-count');
 const langToggle = document.getElementById('lang-toggle');
 const btnUpcoming = document.getElementById('btn-upcoming');
@@ -612,6 +613,19 @@ function setupScroll() {
     btnScrollTop.addEventListener('click', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+
+    if (navExplore) {
+        navExplore.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Unlock scroll
+            document.body.classList.remove('no-scroll');
+            // Smoothly scroll to portal
+            setTimeout(() => {
+                const portal = document.getElementById('portal-section');
+                if (portal) portal.scrollIntoView({ behavior: 'smooth' });
+            }, 50);
+        });
+    }
 }
 
 // --- Reminders ---

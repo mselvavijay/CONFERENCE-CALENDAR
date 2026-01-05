@@ -1,18 +1,17 @@
 {
-    "version": 2,
     "functions": {
-        "api/index.py": {
+        "api/main.py": {
             "includeFiles": "storage/events.json"
         }
     },
     "rewrites": [
         {
             "source": "/api",
-            "destination": "/api/index.py"
+            "destination": "api/main.py"
         },
         {
             "source": "/api/(.*)",
-            "destination": "/api/index.py"
+            "destination": "api/main.py"
         }
     ]
 }

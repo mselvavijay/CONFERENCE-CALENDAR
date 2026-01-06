@@ -7,7 +7,6 @@ let map;
 let markers = [];
 
 // DOM Elements
-const searchInput = document.getElementById('search-input');
 const filterTopic = document.getElementById('filter-topic');
 const filterCity = document.getElementById('filter-city');
 const filterCountry = document.getElementById('filter-country');
@@ -20,7 +19,6 @@ const mapContainer = document.getElementById('map-container');
 const listContainer = document.getElementById('list-container');
 const navHome = document.getElementById('nav-home');
 const navMyEvents = document.getElementById('nav-my-events');
-const navExplore = document.getElementById('nav-explore');
 const myEventsCount = document.getElementById('my-events-count');
 const langToggle = document.getElementById('lang-toggle');
 const btnUpcoming = document.getElementById('btn-upcoming');
@@ -77,7 +75,16 @@ function initMap() {
 async function loadEvents() {
     try {
         const response = await fetch(`${API_BASE}/events`);
-        allEvents = await response.json();
+        const data = await response.json();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // Portal-wide: Remove outdated events (anything before today)
+        allEvents = data.filter(ev => {
+            const evDate = new Date(ev.startDate);
+            return evDate >= today;
+        });
+
         renderEvents(allEvents);
         setupTypeahead();
     } catch (err) {
@@ -115,7 +122,7 @@ function renderEvents(events) {
             </div>
             <div class="event-actions">
                 <a href="${event.registrationUrl}" target="_blank" class="btn primary">${getTrans('btn-register')}</a>
-                <button class="btn btn-interest" data-id="${event.id}">
+                <button class="btn btn-interest" data-id="${event.id}" ${isSaved(event.id) ? 'disabled' : ''}>
                    ${isSaved(event.id) ? getTrans('btn-saved') : getTrans('btn-save')}
                 </button>
             </div>
@@ -170,7 +177,7 @@ function renderEvents(events) {
                         <a href="${event.registrationUrl}" target="_blank" class="btn primary" style="flex:1; padding:7px 5px; font-size:0.85em; text-decoration:none; border-radius:4px; text-align:center; font-weight:600; background:#3498db; color:white;">
                             ${getTrans('btn-register')}
                         </a>
-                        <button class="btn btn-interest" data-id="${event.id}" style="flex:1; padding:7px 5px; font-size:0.85em; border-radius:4px; cursor:pointer;">
+                        <button class="btn btn-interest" data-id="${event.id}" ${isSaved(event.id) ? 'disabled' : ''} style="flex:1; padding:7px 5px; font-size:0.85em; border-radius:4px; ${isSaved(event.id) ? '' : 'cursor:pointer;'}">
                             ${isSaved(event.id) ? getTrans('btn-saved') : getTrans('btn-save')}
                         </button>
                     </div>
@@ -214,14 +221,12 @@ function checkIsUpcoming(startDateStr) {
 
 // --- Filtering Logic ---
 function filterEvents() {
-    const term = searchInput.value.toLowerCase();
     const topic = filterTopic.value.toLowerCase();
     const city = filterCity.value.toLowerCase();
     const country = filterCountry.value.toLowerCase();
     const date = filterDate.value;
 
     let filtered = allEvents.filter(ev => {
-        const matchesTerm = ev.eventName.toLowerCase().includes(term) || (ev.description || '').toLowerCase().includes(term);
         const matchesTopic = !topic || ev.topic.toLowerCase().includes(topic);
         const matchesCity = !city || ev.city.toLowerCase().includes(city);
         const matchesCountry = !country || ev.country.toLowerCase().includes(country);
@@ -232,7 +237,7 @@ function filterEvents() {
             matchesDate = ev.startDate && ev.startDate.startsWith(date);
         }
 
-        return matchesTerm && matchesTopic && matchesCity && matchesCountry && matchesDate;
+        return matchesTopic && matchesCity && matchesCountry && matchesDate;
     });
 
     if (filteringToSaved) {
@@ -253,12 +258,11 @@ function filterEvents() {
 }
 
 function setupFilters() {
-    [searchInput, filterTopic, filterCity, filterCountry, filterDate].forEach(el => {
+    [filterTopic, filterCity, filterCountry, filterDate].forEach(el => {
         el.addEventListener('input', filterEvents);
     });
 
     btnReset.addEventListener('click', () => {
-        searchInput.value = '';
         filterTopic.value = '';
         filterCity.value = '';
         filterCountry.value = '';
@@ -297,36 +301,40 @@ function updateUpcomingButtonStyle() {
     }
 }
 
-// --- Typeahead / Autocomplete ---
-// Simple implementation: Show list under input when typing
+// Map to store source data for each input
+const typeaheadSources = {
+    'filter-topic': [],
+    'filter-city': [],
+    'filter-country': []
+};
+
 function setupTypeahead() {
-    // Initial setup with all events
+    // Attach events once
+    attachTypeahead(filterTopic, 'filter-topic', 'suggestions-topic');
+    attachTypeahead(filterCity, 'filter-city', 'suggestions-city');
+    attachTypeahead(filterCountry, 'filter-country', 'suggestions-country');
+
+    // Initial load of data
     updateTypeaheadSources(allEvents);
 }
 
 function updateTypeaheadSources(subset) {
-    const topics = new Set(subset.map(e => e.topic).filter(Boolean));
-    const cities = new Set(subset.map(e => e.city).filter(Boolean));
-    const countries = new Set(subset.map(e => e.country).filter(Boolean));
-
-    attachTypeahead(filterTopic, Array.from(topics), 'suggestions-topic');
-    attachTypeahead(filterCity, Array.from(cities), 'suggestions-city');
-    attachTypeahead(filterCountry, Array.from(countries), 'suggestions-country');
+    typeaheadSources['filter-topic'] = Array.from(new Set(subset.map(e => e.topic).filter(Boolean)));
+    typeaheadSources['filter-city'] = Array.from(new Set(subset.map(e => e.city).filter(Boolean)));
+    typeaheadSources['filter-country'] = Array.from(new Set(subset.map(e => e.country).filter(Boolean)));
 }
 
-function attachTypeahead(input, sourceData, listId) {
+function attachTypeahead(input, sourceKey, listId) {
     const list = document.getElementById(listId);
+    if (!list) return;
 
-    // Input Handler
-    input.onfocus = () => showSuggestions(input.value);
-    input.oninput = () => showSuggestions(input.value);
-
-    // Blur handler (delay to allow click)
-    input.onblur = () => setTimeout(() => list.style.display = 'none', 200);
-
-    function showSuggestions(val) {
+    const showSuggestions = (val) => {
+        const sourceData = typeaheadSources[sourceKey] || [];
         list.innerHTML = '';
-        if (sourceData.length === 0) return;
+        if (sourceData.length === 0) {
+            list.style.display = 'none';
+            return;
+        }
 
         const matches = sourceData.filter(item => item.toLowerCase().includes(val.toLowerCase()));
 
@@ -335,10 +343,12 @@ function attachTypeahead(input, sourceData, listId) {
                 const div = document.createElement('div');
                 div.className = 'suggestion-item';
                 div.textContent = match;
-                div.onclick = () => {
+                // Use mousedown instead of click to fire before blur
+                div.onmousedown = (e) => {
+                    e.preventDefault(); // Prevent input blur from winning
                     input.value = match;
                     list.style.display = 'none';
-                    filterEvents(); // Trigger filter immediately
+                    filterEvents();
                 };
                 list.appendChild(div);
             });
@@ -346,7 +356,15 @@ function attachTypeahead(input, sourceData, listId) {
         } else {
             list.style.display = 'none';
         }
-    }
+    };
+
+    // Events
+    input.addEventListener('focus', () => showSuggestions(input.value));
+    input.addEventListener('input', () => showSuggestions(input.value));
+    input.addEventListener('blur', () => {
+        // Safe hide
+        setTimeout(() => list.style.display = 'none', 150);
+    });
 }
 
 // --- My Events (Local Storage) ---
@@ -360,11 +378,7 @@ function isSaved(id) {
 
 // Make handleShowInterest globally accessible
 window.handleShowInterest = function (id) {
-    console.log("handleShowInterest called for ID:", id);
-    if (isSaved(id)) {
-        alert(getTrans('msg-already-saved'));
-        return;
-    }
+    if (isSaved(id)) return;
     const event = allEvents.find(e => e.id === id);
     if (event) {
         openInterestModal(event);
@@ -438,7 +452,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     saveLocally(data.eventId);
                     closeInterestModal();
                 } else {
-                    alert('Error: ' + result.message);
+                    const errorMsg = result.detail || result.message || 'Unknown error';
+                    alert('Error: ' + errorMsg);
                 }
             } catch (err) {
                 console.error("Submission error:", err);
@@ -508,7 +523,6 @@ function setupNavigation() {
         document.body.classList.remove('no-scroll');
 
         // Reset all filter inputs
-        searchInput.value = '';
         filterTopic.value = '';
         filterCity.value = '';
         filterCountry.value = '';
@@ -613,19 +627,6 @@ function setupScroll() {
     btnScrollTop.addEventListener('click', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
-
-    if (navExplore) {
-        navExplore.addEventListener('click', (e) => {
-            e.preventDefault();
-            // Unlock scroll
-            document.body.classList.remove('no-scroll');
-            // Smoothly scroll to portal
-            setTimeout(() => {
-                const portal = document.getElementById('portal-section');
-                if (portal) portal.scrollIntoView({ behavior: 'smooth' });
-            }, 50);
-        });
-    }
 }
 
 // --- Reminders ---

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interest Submissions - Admin Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+
+<body>
+
+    <!-- Auth Overlay (Shared logic will handle this) -->
+    <div id="auth-overlay" class="auth-overlay">
+        <div class="glass-panel auth-box">
+            <h2>Admin Login</h2>
+            <p style="margin: 10px 0;">Restricted Access</p>
+            <input type="password" id="admin-pass" placeholder="Enter Passphrase">
+            <button class="btn primary" id="btn-login" style="width:100%; margin-top:10px;">Login</button>
+            <p id="login-error" style="color:#ff6b6b; margin-top:10px; display:none;">Invalid Passphrase</p>
+            <a href="index.html" style="color:white; display:block; margin-top:20px; font-size:0.8rem;">Go Back Home</a>
+        </div>
+    </div>
+
+    <div class="container glass-panel" id="admin-content" style="filter: blur(10px); pointer-events:none;">
+        <header>
+            <h1>Admin Dashboard</h1>
+            <nav class="nav-links">
+                <a href="index.html">Back to Home</a>
+                <a href="admin.html">Uploads</a>
+                <a href="#" class="active">Submissions</a>
+                <a href="#" id="btn-logout">Logout</a>
+            </nav>
+        </header>
+
+        <section class="admin-dashboard" style="display: flex; flex-direction: column; gap: 30px; margin-top: 20px;">
+            <div class="glass-panel" style="padding: 25px; display: flex; flex-direction: column; height: 80vh;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <h2 style="display: flex; align-items: center; gap: 10px;">
+                        <span>📊</span> Interest Submissions
+                    </h2>
+                    <button class="btn primary" id="btn-download-interests"
+                        style="font-size: 0.9rem; padding: 10px 20px;">Download Full Report (.xlsx)</button>
+                </div>
+
+                <div
+                    style="overflow-y: auto; overflow-x: auto; background: rgba(0,0,0,0.3); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); flex-grow: 1;">
+                    <table style="width:100%; border-collapse: collapse; font-size: 0.9rem; text-align: left;">
+                        <thead
+                            style="background: #1e2a1e; color: #4ade80; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.5);">
+                            <tr style="background: #1e2a1e;">
+                                <th
+                                    style="padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); background: #1e2a1e;">
+                                    User</th>
+                                <th
+                                    style="padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); background: #1e2a1e;">
+                                    Email / ID</th>
+                                <th
+                                    style="padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); background: #1e2a1e;">
+                                    Role</th>
+                                <th
+                                    style="padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); background: #1e2a1e;">
+                                    Location</th>
+                                <th
+                                    style="padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); background: #1e2a1e;">
+                                    Interested Event</th>
+                                <th
+                                    style="padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); background: #1e2a1e;">
+                                    Price</th>
+                                <th
+                                    style="padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); background: #1e2a1e; white-space: nowrap;">
+                                    Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody id="interests-table-body">
+                            <tr>
+                                <td colspan="7" style="padding: 40px; text-align: center; opacity: 0.5;">Loading
+                                    interest data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Re-use the same admin.js for auth, but we might need to separate logic if it conflicts. 
+         For now, admin.js checks for element existence. -->
+    <script src="assets/admin.js"></script>
+</body>
+
+</html>

@@ -82,8 +82,8 @@ section {
     left: 0;
     width: 100%;
     height: 100%;
-    background: url('portal-bg.png') no-repeat center center/cover;
-    opacity: 0.5;
+    background: url('new3.png') no-repeat center center/cover;
+    opacity: 0;
     /* Fixed path and increased opacity */
     z-index: -1;
 }
@@ -230,14 +230,21 @@ h1 {
 .nav-links a {
     color: white;
     text-decoration: none;
-    margin-left: 20px;
+    margin-left: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
     font-weight: 500;
-    transition: 0.3s;
+    transition: background 0.3s, box-shadow 0.3s;
 }
 
 .nav-links a:hover {
-    text-decoration: underline;
-    text-underline-offset: 5px;
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.nav-links a.active {
+    background: rgba(76, 175, 80, 0.3);
+    border: 1px solid rgba(76, 175, 80, 0.5);
 }
 
 /* Main Content Grid */
@@ -335,8 +342,15 @@ input:focus {
     display: inline-block;
 }
 
-.btn:hover {
+.btn:hover:not(:disabled) {
     filter: brightness(1.1);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    filter: grayscale(0.5);
+    pointer-events: none;
 }
 
 .btn-interest {
@@ -425,8 +439,12 @@ input:focus {
 .events-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
+    max-height: 650px;
+    /* Internal scroll height */
     overflow-y: auto;
+    padding-right: 10px;
+    /* Space for scrollbar */
     flex: 1;
 }
 

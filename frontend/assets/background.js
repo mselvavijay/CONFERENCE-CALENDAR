@@ -4,8 +4,8 @@ let slides = [];
 const textureLoader = new THREE.TextureLoader();
 
 const CONFIG = {
-    heroImage: 'assets/bg_user_1.jpg',
-    portalImage: 'assets/bg_portal_new.png',
+    heroImage: 'assets/new3.png',
+    portalImage: 'assets/new3.png',
     opacity: 0.6 // Increased for more vibrant visibility
 };
 

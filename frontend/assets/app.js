@@ -130,12 +130,12 @@ function renderEvents(events) {
             <div class="event-actions">
                 <a href="${event.registrationUrl}" target="_blank" class="btn primary">${getTrans('btn-register')}</a>
                 <div style="display:flex; flex-direction:column; gap:5px; width:100%;">
-                    ${(!filteringToSaved || !IS_LOCAL) ? `
+                    ${!filteringToSaved ? `
                     <button class="btn btn-interest" data-id="${event.id}" ${isSaved(event.id) ? 'disabled' : ''}>
                         ${isSaved(event.id) ? getTrans('btn-saved') : getTrans('btn-save')}
                     </button>` : ''}
                     
-                    ${(isSaved(event.id) && (filteringToSaved || !IS_LOCAL)) ? `
+                    ${(isSaved(event.id) && filteringToSaved) ? `
                     <button class="btn btn-remove-interest" data-id="${event.id}" style="background:#e74c3c; font-size:0.8rem; padding:5px;">
                         ${getTrans('btn-remove-interest')}
                     </button>` : ''}
@@ -193,12 +193,12 @@ function renderEvents(events) {
                             <a href="${event.registrationUrl}" target="_blank" class="btn primary" style="flex:1; padding:7px 5px; font-size:0.85em; text-decoration:none; border-radius:4px; text-align:center; font-weight:600; background:#3498db; color:white;">
                                 ${getTrans('btn-register')}
                             </a>
-                            ${(!filteringToSaved || !IS_LOCAL) ? `
+                            ${!filteringToSaved ? `
                             <button class="btn btn-interest" data-id="${event.id}" ${isSaved(event.id) ? 'disabled' : ''} style="flex:1; padding:7px 5px; font-size:0.85em; border-radius:4px; ${isSaved(event.id) ? '' : 'cursor:pointer;'}">
                                 ${isSaved(event.id) ? getTrans('btn-saved') : getTrans('btn-save')}
                             </button>` : ''}
                         </div>
-                        ${(isSaved(event.id) && (filteringToSaved || !IS_LOCAL)) ? `
+                        ${(isSaved(event.id) && filteringToSaved) ? `
                         <button class="btn btn-remove-interest" data-id="${event.id}" style="width:100%; padding:5px; font-size:0.8em; border-radius:4px; background:#e74c3c; color:white; border:none; cursor:pointer;">
                             ${getTrans('btn-remove-interest')}
                         </button>` : ''}
@@ -242,17 +242,13 @@ window.handleRemoveInterest = async function (id) {
     if (!confirm(getTrans('msg-remove-confirm'))) return;
 
     let email = null;
-    if (IS_LOCAL) {
-        // Find email in local storage
-        const saved = getSavedEvents();
-        const entry = saved.find(item => item.id === id);
-        email = entry ? entry.email : null;
+    // Attempt to find email in local storage for one-click removal
+    const saved = getSavedEvents();
+    const entry = saved.find(item => item.id === id);
+    email = entry ? entry.email : null;
 
-        if (!email) {
-            // Fallback for old data or if missing
-            email = prompt(getTrans('prompt-remove-email'));
-        }
-    } else {
+    if (!email) {
+        // Fallback for old data or if not found
         email = prompt(getTrans('prompt-remove-email'));
     }
 

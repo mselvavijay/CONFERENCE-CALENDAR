@@ -1,9 +1,3 @@
-# Auto-generated city coordinates dictionary (population > 5,000)
-# Source: worldcitiespop.csv
-# Generated: 2025-12-22T07:22:16.254566
-# Entries: 32505
-# Key collisions resolved: 2470
-
 CITY_COORDINATES = {   
 "amsterdam": [52.3676, 4.9041],
 "bangalore": [12.9716, 77.5946],
@@ -72,7 +66,8 @@ CITY_COORDINATES = {
 "birmingham": [52.4862, -1.8904],
 "stavanger": [58.9690, 5.7331],
 "hanoi": [21.0285, 105.8542],
-"italy": [41.8719, 12.5674]
+"italy": [41.8719, 12.5674],
+"goa": [15.2993, 74.1240]
 }
 def get_coordinates(location_string: str):
     """

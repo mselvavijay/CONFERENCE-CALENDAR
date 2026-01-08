@@ -201,29 +201,90 @@ async function loadInterests() {
         }
         const data = await res.json();
 
+        // Summary Stats Elements
+        const statTotalInterests = document.getElementById('stat-total-interests');
+        const statActiveEvents = document.getElementById('stat-active-events');
+        const statTotalFees = document.getElementById('stat-total-fees');
+
+        // Calculate Stats
+        let totalInterests = 0;
+        let totalFees = 0;
+        let activeEvents = data.length;
+
         interestsTableBody.innerHTML = '';
         if (data.length === 0) {
-            interestsTableBody.innerHTML = `<tr><td colspan="7" style="padding: 20px; text-align: center; opacity: 0.6;">No interest submissions yet.</td></tr>`;
+            interestsTableBody.innerHTML = `<tr><td colspan="5" style="padding: 20px; text-align: center; opacity: 0.6;">No interest submissions yet.</td></tr>`;
+            if (statTotalInterests) statTotalInterests.textContent = '0';
+            if (statActiveEvents) statActiveEvents.textContent = '0';
+            if (statTotalFees) statTotalFees.textContent = '$0';
             return;
         }
 
         data.forEach(item => {
+            totalInterests += item['No. of interests'] || 0;
+
+            // Parse Total string "$1,234.0" to number
+            const rawTotal = String(item['Total'] || '0').replace(/[$,]/g, '');
+            totalFees += parseFloat(rawTotal) || 0;
+
             const row = document.createElement('tr');
-            row.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
             row.innerHTML = `
-                <td style="padding: 12px;"><strong>${item['First Name']} ${item['Last Name']}</strong><br><small style="opacity:0.6;">${item['BH Username']}</small></td>
-                <td style="padding: 12px;">${item['BH Email']}</td>
-                <td style="padding: 12px;">${item['Role'] || '-'}</td>
-                <td style="padding: 12px;">${item['City']}, ${item['Country']}</td>
-                <td style="padding: 12px;">${item['Event Name']}</td>
-                <td style="padding: 12px;">${item['Event Price']}</td>
-                <td style="padding: 12px; font-size: 0.8rem; opacity: 0.7; white-space:nowrap;">${item['Timestamp']}</td>
+                <td><strong>${item['Event Name']}</strong></td>
+                <td>${item['Fees']}</td>
+                <td style="text-align: center;">${item['No. of interests']}</td>
+                <td>${item['Total']}</td>
+                <td>
+                    <button class="btn admin-btn-clear" data-event-name="${item['Event Name']}">
+                        Clear
+                    </button>
+                </td>
             `;
             interestsTableBody.appendChild(row);
         });
+
+        // Update Stats UI
+        if (statTotalInterests) statTotalInterests.textContent = totalInterests.toLocaleString();
+        if (statActiveEvents) statActiveEvents.textContent = activeEvents.toLocaleString();
+        if (statTotalFees) statTotalFees.textContent = `$${totalFees.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+
     } catch (e) {
         console.error("Failed to load interests:", e);
-        interestsTableBody.innerHTML = `<tr><td colspan="6" style="padding: 20px; text-align: center; color: #ff6b6b;">Error loading data.</td></tr>`;
+        interestsTableBody.innerHTML = `<tr><td colspan="5" style="padding: 20px; text-align: center; color: #ff6b6b;">Error loading data.</td></tr>`;
+    }
+}
+
+// Event Delegation for Clear Buttons
+if (interestsTableBody) {
+    interestsTableBody.addEventListener('click', async (e) => {
+        if (e.target.classList.contains('admin-btn-clear')) {
+            const eventName = e.target.getAttribute('data-event-name');
+            if (confirm(`Are you sure you want to CLEAR all interests for "${eventName}"? This action cannot be undone.`)) {
+                await clearInterests(eventName);
+            }
+        }
+    });
+}
+
+async function clearInterests(eventName) {
+    try {
+        const res = await fetch(`${API_BASE}/interest/clear`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                adminSecret: authToken,
+                eventName: eventName
+            })
+        });
+
+        const result = await res.json();
+        if (res.ok) {
+            alert(result.message);
+            loadInterests(); // Reload table
+        } else {
+            alert(`Error: ${result.detail || result.message}`);
+        }
+    } catch (e) {
+        alert(`Network Error: ${e.message}`);
     }
 }
 

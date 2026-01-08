@@ -34,9 +34,10 @@
             </nav>
         </header>
 
-        <section class="admin-dashboard" style="display: flex; flex-direction: column; gap: 30px; margin-top: 20px;">
-            <div class="glass-panel" style="padding: 25px; display: flex; flex-direction: column; height: 80vh;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <section class="admin-dashboard">
+            <div class="glass-panel" style="padding: 25px; display: flex; flex-direction: column; min-height: 90vh;">
+                <!-- Action Bar -->
+                <div class="admin-action-bar">
                     <h2 style="display: flex; align-items: center; gap: 10px;">
                         <span>📊</span> Interest Submissions
                     </h2>
@@ -44,38 +45,37 @@
                         style="font-size: 0.9rem; padding: 10px 20px;">Download Full Report (.xlsx)</button>
                 </div>
 
-                <div
-                    style="overflow-y: auto; overflow-x: auto; background: rgba(0,0,0,0.3); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); flex-grow: 1;">
-                    <table style="width:100%; border-collapse: collapse; font-size: 0.9rem; text-align: left;">
-                        <thead
-                            style="background: #1e2a1e; color: #4ade80; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.5);">
-                            <tr style="background: #1e2a1e;">
-                                <th
-                                    style="padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); background: #1e2a1e;">
-                                    User</th>
-                                <th
-                                    style="padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); background: #1e2a1e;">
-                                    Email / ID</th>
-                                <th
-                                    style="padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); background: #1e2a1e;">
-                                    Role</th>
-                                <th
-                                    style="padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); background: #1e2a1e;">
-                                    Location</th>
-                                <th
-                                    style="padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); background: #1e2a1e;">
-                                    Interested Event</th>
-                                <th
-                                    style="padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); background: #1e2a1e;">
-                                    Price</th>
-                                <th
-                                    style="padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); background: #1e2a1e; white-space: nowrap;">
-                                    Timestamp</th>
+                <!-- Stats Summary Bar -->
+                <div class="admin-stats-summary">
+                    <div class="glass-panel summary-card">
+                        <span class="label">Total Interests</span>
+                        <span class="value" id="stat-total-interests">0</span>
+                    </div>
+                    <div class="glass-panel summary-card">
+                        <span class="label">Active Events</span>
+                        <span class="value" id="stat-active-events">0</span>
+                    </div>
+                    <div class="glass-panel summary-card">
+                        <span class="label">Total Fees</span>
+                        <span class="value" id="stat-total-fees">$0</span>
+                    </div>
+                </div>
+
+                <!-- Table Wrapper -->
+                <div class="admin-table-wrapper">
+                    <table class="admin-data-table">
+                        <thead>
+                            <tr>
+                                <th>Event Name</th>
+                                <th>Fees</th>
+                                <th style="text-align: center;">No. of interests</th>
+                                <th>Total</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="interests-table-body">
                             <tr>
-                                <td colspan="7" style="padding: 40px; text-align: center; opacity: 0.5;">Loading
+                                <td colspan="5" style="padding: 40px; text-align: center; opacity: 0.5;">Loading
                                     interest data...</td>
                             </tr>
                         </tbody>

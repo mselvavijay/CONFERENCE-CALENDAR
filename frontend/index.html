@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Events Portal</title>
+    <title>Conference Calendar</title>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -30,7 +30,7 @@
         <div class="hero-content glass-panel">
             <h1>CONFERENCE CALENDAR</h1>
             <h2 class="year-accent">2026</h2>
-            <p>Discover the future of technology and innovation across the globe.</p>
+            <p>Discover the future of technology & innovation across the globe</p>
             <button class="btn primary btn-large" onclick="scrollToPortal()">Explore Now</button>
         </div>
     </section>
@@ -71,15 +71,15 @@
                     </div>
 
                     <div class="filter-group" style="position:relative;">
-                        <label data-i18n="lbl-city">City</label>
-                        <input type="text" id="filter-city" data-i18n-ph="ph-city" placeholder="e.g. London">
-                        <div id="suggestions-city" class="suggestions-list"></div>
-                    </div>
-
-                    <div class="filter-group" style="position:relative;">
                         <label data-i18n="lbl-country">Country</label>
                         <input type="text" id="filter-country" data-i18n-ph="ph-country" placeholder="e.g. UK">
                         <div id="suggestions-country" class="suggestions-list"></div>
+                    </div>
+
+                    <div class="filter-group" style="position:relative;">
+                        <label data-i18n="lbl-city">City</label>
+                        <input type="text" id="filter-city" data-i18n-ph="ph-city" placeholder="e.g. London">
+                        <div id="suggestions-city" class="suggestions-list"></div>
                     </div>
 
                     <div class="filter-group">
@@ -108,74 +108,62 @@
 
     <!-- Interest Modal -->
     <div id="interest-modal" class="modal-overlay" style="display:none;">
-        <div class="modal-content glass-panel"
-            style="max-width: 500px; width: 90%; margin: 10% auto; padding: 25px; position: relative;">
-            <button id="close-modal"
-                style="position:absolute; top:10px; right:15px; background:none; border:none; color:white; font-size:1.5em; cursor:pointer;">&times;</button>
-            <h2 style="margin-top:0;">Show Interest</h2>
-            <p id="modal-event-name" style="color:#3498db; margin-bottom:20px; font-weight:bold;"></p>
+        <div class="modal-content">
+            <button id="close-modal">&times;</button>
+            <h2>Show Interest</h2>
+            <p id="modal-event-name"></p>
 
             <form id="interest-form">
                 <input type="hidden" id="modal-event-id">
 
-                <div class="form-group" style="margin-bottom:15px;">
-                    <label style="display:block; margin-bottom:5px;">First Name *</label>
-                    <input type="text" id="int-fname" required
-                        style="width:100%; padding:8px; border-radius:4px; border:1px solid #ddd;">
+                <div class="form-group">
+                    <label>First Name *</label>
+                    <input type="text" id="int-fname" required>
                 </div>
 
-                <div class="form-group" style="margin-bottom:15px;">
-                    <label style="display:block; margin-bottom:5px;">Last Name *</label>
-                    <input type="text" id="int-lname" required
-                        style="width:100%; padding:8px; border-radius:4px; border:1px solid #ddd;">
+                <div class="form-group">
+                    <label>Last Name *</label>
+                    <input type="text" id="int-lname" required>
                 </div>
 
-                <div class="form-group" style="margin-bottom:15px;">
-                    <label style="display:block; margin-bottom:5px;">BH Username *</label>
-                    <input type="text" id="int-username" required
-                        style="width:100%; padding:8px; border-radius:4px; border:1px solid #ddd;">
+                <div class="form-group">
+                    <label>BH Username *</label>
+                    <input type="text" id="int-username" required>
                 </div>
 
-                <div class="form-group" style="margin-bottom:15px;">
-                    <label style="display:block; margin-bottom:5px;">BH Email ID *</label>
-                    <input type="email" id="int-email" required
-                        style="width:100%; padding:8px; border-radius:4px; border:1px solid #ddd;">
+                <div class="form-group">
+                    <label>BH Email ID *</label>
+                    <input type="email" id="int-email" required>
                 </div>
 
-                <div class="form-group" style="margin-bottom:15px;">
-                    <label style="display:block; margin-bottom:5px;">Role *</label>
-                    <input type="text" id="int-role" required
-                        style="width:100%; padding:8px; border-radius:4px; border:1px solid #ddd;">
+                <div class="form-group">
+                    <label>Role *</label>
+                    <input type="text" id="int-role" required>
                 </div>
 
-                <div style="display:flex; gap:10px;">
-                    <div class="form-group" style="margin-bottom:15px; flex:1;">
-                        <label style="display:block; margin-bottom:5px;">City *</label>
-                        <input type="text" id="int-city" required
-                            style="width:100%; padding:8px; border-radius:4px; border:1px solid #ddd;">
+                <div style="display:flex; gap:15px;">
+                    <div class="form-group" style="flex:1;">
+                        <label>City *</label>
+                        <input type="text" id="int-city" required>
                     </div>
-                    <div class="form-group" style="margin-bottom:15px; flex:1;">
-                        <label style="display:block; margin-bottom:5px;">Country *</label>
-                        <input type="text" id="int-country" required
-                            style="width:100%; padding:8px; border-radius:4px; border:1px solid #ddd;">
+                    <div class="form-group" style="flex:1;">
+                        <label>Country *</label>
+                        <input type="text" id="int-country" required>
                     </div>
                 </div>
 
-                <div class="form-group" style="margin-bottom:10px;">
-                    <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
-                        <input type="checkbox" id="int-confirm" required>
-                        <span style="font-size:0.9em;">I confirm my willingness to attend this event.</span>
-                    </label>
-                </div>
+                <label class="checkbox-group">
+                    <input type="checkbox" id="int-confirm" required>
+                    <span>I confirm my willingness to attend this event.</span>
+                </label>
 
-                <div class="form-group" style="margin-bottom:20px;">
-                    <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
-                        <input type="checkbox" id="int-consent" required>
-                        <span style="font-size:0.9em;">I consent for BH team to contact me via email.</span>
-                    </label>
-                </div>
+                <label class="checkbox-group" style="margin-bottom: 25px;">
+                    <input type="checkbox" id="int-consent" required>
+                    <span>I consent for BH team to contact me via email.</span>
+                </label>
 
-                <button type="submit" class="btn primary" style="width:100%; padding:10px;">Submit Interest</button>
+                <button type="submit" class="btn primary" style="width:100%; border-radius: 12px; height: 48px;">Submit
+                    Interest</button>
             </form>
         </div>
     </div>

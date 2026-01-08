@@ -1,0 +1,16 @@
+Total Blobs Found: 2
+Path: interests/interest.json, Url: https://xhkd930vwgxhviih.public.blob.vercel-storage.com/interests/interest-8HpiaQLOUJh4QguZhO4yM4NryB83a5.json
+Path: interests/interest.json, Url: https://xhkd930vwgxhviih.public.blob.vercel-storage.com/interests/interest-JD70s2z3FPq9wgi8fJvC10leyu3UAZ.json
+Aggregated Rows: 2
+{
+  "Event Name": "Mindspace Robotics & Automation Conference",
+  "Fees": "TBD",
+  "No. of interests": 1,
+  "Total": 0
+}
+{
+  "Event Name": "CIGR\u00c9 Paris Session 2026",
+  "Fees": "TBD",
+  "No. of interests": 1,
+  "Total": 0
+}

@@ -5,3 +5,5 @@ openpyxl
 python-multipart
 jinja2
 geopy
+requests
+python-dotenv

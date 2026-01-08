@@ -22,7 +22,11 @@ const translations = {
         "msg-saved": "Thank you! Your interest has been noted.",
         "msg-already-saved": "You are already interested in this event.",
         "btn-remove": "Remove",
-        "msg-no-events": "No events saved by you! Please add some events."
+        "btn-remove-interest": "Withdraw Interest",
+        "msg-no-events": "No events saved by you! Please add some events.",
+        "msg-removed": "Your interest has been withdrawn successfully.",
+        "prompt-remove-email": "Please enter your email to confirm withdrawal:",
+        "msg-remove-confirm": "Confirm action: Your interest will be removed from both your list and the admin records. Proceed?"
     },
     "fr": {
         "nav-home": "Accueil",
@@ -44,7 +48,11 @@ const translations = {
         "btn-register": "Voir les détails",
         "btn-save": "Sauvegarder",
         "btn-remove": "Retirer",
-        "msg-no-events": "Aucun événement trouvé."
+        "btn-remove-interest": "Retirer l'intérêt",
+        "msg-no-events": "Aucun événement trouvé.",
+        "msg-removed": "Votre intérêt a été retiré avec succès.",
+        "prompt-remove-email": "Veuillez entrer votre email pour confirmer le retrait:",
+        "msg-remove-confirm": "Confirmez l’action : Votre intérêt sera supprimé de votre liste et des dossiers administratifs. Voulez-vous continuer ?"
     },
     "es": {
         "nav-home": "Inicio",
@@ -66,7 +74,11 @@ const translations = {
         "btn-register": "Ver detalles",
         "btn-save": "Guardar",
         "btn-remove": "Eliminar",
-        "msg-no-events": "No se encontraron eventos."
+        "btn-remove-interest": "Retirar Interés",
+        "msg-no-events": "No se encontraron eventos.",
+        "msg-removed": "Su interés ha sido retirado con éxito.",
+        "prompt-remove-email": "Por favor, ingrese su correo electrónico para confirmar el retiro:",
+        "msg-remove-confirm": "Confirme la acción: Su interés se eliminará tanto de su lista como de los registros administrativos. ¿Desea continuar?"
     },
     "de": {
         "nav-home": "Startseite",
@@ -88,7 +100,11 @@ const translations = {
         "btn-register": "Details anzeigen",
         "btn-save": "Speichern",
         "btn-remove": "Entfernen",
-        "msg-no-events": "Keine Veranstaltungen gefunden."
+        "btn-remove-interest": "Interesse zurückziehen",
+        "msg-no-events": "Keine Veranstaltungen gefunden.",
+        "msg-removed": "Ihr Interesse wurde erfolgreich zurückgezogen.",
+        "prompt-remove-email": "Bitte geben Sie Ihre E-Mail-Adresse ein, um den Widerruf zu bestätigen:",
+        "msg-remove-confirm": "Aktion bestätigen: Ihr Interesse wird sowohl aus Ihrer Liste als auch aus den Verwaltungsunterlagen entfernt. Möchten Sie fortfahren?"
     },
     "it": {
         "nav-home": "Home",
@@ -110,7 +126,11 @@ const translations = {
         "btn-register": "Visualizza Dettagli",
         "btn-save": "Salva",
         "btn-remove": "Rimuovi",
+        "btn-remove-interest": "Ritira Interesse",
         "msg-no-events": "Nessun evento salvato! Aggiungi alcuni eventi.",
+        "msg-removed": "Il tuo interesse è stato ritirato con successo.",
+        "prompt-remove-email": "Inserisci la tua email per confermare il ritiro:",
+        "msg-remove-confirm": "Conferma azione: Il tuo interesse verrà rimosso sia dalla tua lista che dai registri amministrativi. Procedere?",
         "btn-upcoming": "Prossimi Eventi",
         "nav-upcoming": "In arrivo"
     }

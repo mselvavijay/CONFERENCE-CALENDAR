@@ -2,6 +2,8 @@ const API_BASE = (!window.location.hostname || window.location.hostname === "loc
     ? "http://localhost:8081/api"
     : "https://bhconferencecalendar.vercel.app/api";
 
+const IS_LOCAL = (!window.location.hostname || window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+
 let allEvents = [];
 let map;
 let markers = [];
@@ -57,17 +59,22 @@ function initMap() {
 
     map = L.map('map', {
         minZoom: 2.2, // Prevents world from becoming too small for the container
+        maxZoom: 10, // Restricted to regional/metro level
         maxBounds: worldBounds,
         maxBoundsViscosity: 1.0, // Firmly locks the map within bounds
-        worldCopyJump: false
+        worldCopyJump: false,
+        attributionControl: false // Hide attribution per user request
     }).setView([20, 0], 2.2);
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 19,
+    // Esri World Street Map - Colorful, English Labels, "Google Maps" style
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 10, // Match map limit
         noWrap: true,
-        bounds: worldBounds
+        bounds: worldBounds,
+        // Efficient Performance Settings
+        keepBuffer: 2,
+        updateWhenZooming: false,
+        updateWhenIdle: true
     }).addTo(map);
 }
 
@@ -122,9 +129,17 @@ function renderEvents(events) {
             </div>
             <div class="event-actions">
                 <a href="${event.registrationUrl}" target="_blank" class="btn primary">${getTrans('btn-register')}</a>
-                <button class="btn btn-interest" data-id="${event.id}" ${isSaved(event.id) ? 'disabled' : ''}>
-                   ${isSaved(event.id) ? getTrans('btn-saved') : getTrans('btn-save')}
-                </button>
+                <div style="display:flex; flex-direction:column; gap:5px; width:100%;">
+                    ${(!filteringToSaved || !IS_LOCAL) ? `
+                    <button class="btn btn-interest" data-id="${event.id}" ${isSaved(event.id) ? 'disabled' : ''}>
+                        ${isSaved(event.id) ? getTrans('btn-saved') : getTrans('btn-save')}
+                    </button>` : ''}
+                    
+                    ${(isSaved(event.id) && (filteringToSaved || !IS_LOCAL)) ? `
+                    <button class="btn btn-remove-interest" data-id="${event.id}" style="background:#e74c3c; font-size:0.8rem; padding:5px;">
+                        ${getTrans('btn-remove-interest')}
+                    </button>` : ''}
+                </div>
             </div>
         `;
         listContainer.appendChild(card);
@@ -173,13 +188,20 @@ function renderEvents(events) {
                         ${event.description}
                     </div>` : ''}
 
-                    <div style="margin-top: 10px; display:flex; gap:5px;">
-                        <a href="${event.registrationUrl}" target="_blank" class="btn primary" style="flex:1; padding:7px 5px; font-size:0.85em; text-decoration:none; border-radius:4px; text-align:center; font-weight:600; background:#3498db; color:white;">
-                            ${getTrans('btn-register')}
-                        </a>
-                        <button class="btn btn-interest" data-id="${event.id}" ${isSaved(event.id) ? 'disabled' : ''} style="flex:1; padding:7px 5px; font-size:0.85em; border-radius:4px; ${isSaved(event.id) ? '' : 'cursor:pointer;'}">
-                            ${isSaved(event.id) ? getTrans('btn-saved') : getTrans('btn-save')}
-                        </button>
+                    <div style="margin-top: 10px; display:flex; flex-direction:column; gap:5px;">
+                        <div style="display:flex; gap:5px;">
+                            <a href="${event.registrationUrl}" target="_blank" class="btn primary" style="flex:1; padding:7px 5px; font-size:0.85em; text-decoration:none; border-radius:4px; text-align:center; font-weight:600; background:#3498db; color:white;">
+                                ${getTrans('btn-register')}
+                            </a>
+                            ${(!filteringToSaved || !IS_LOCAL) ? `
+                            <button class="btn btn-interest" data-id="${event.id}" ${isSaved(event.id) ? 'disabled' : ''} style="flex:1; padding:7px 5px; font-size:0.85em; border-radius:4px; ${isSaved(event.id) ? '' : 'cursor:pointer;'}">
+                                ${isSaved(event.id) ? getTrans('btn-saved') : getTrans('btn-save')}
+                            </button>` : ''}
+                        </div>
+                        ${(isSaved(event.id) && (filteringToSaved || !IS_LOCAL)) ? `
+                        <button class="btn btn-remove-interest" data-id="${event.id}" style="width:100%; padding:5px; font-size:0.8em; border-radius:4px; background:#e74c3c; color:white; border:none; cursor:pointer;">
+                            ${getTrans('btn-remove-interest')}
+                        </button>` : ''}
                     </div>
                 </div>
             `;
@@ -200,15 +222,68 @@ function renderEvents(events) {
 // Global Event Delegation for Dynamic Elements
 document.addEventListener('click', (e) => {
     // Check if clicked element or parent is the interest button
-    const btn = e.target.closest('.btn-interest');
-    if (btn) {
-        console.log("Button clicked:", btn);
-        const id = btn.getAttribute('data-id');
-        if (id) {
-            window.handleShowInterest(id);
-        }
+    const interestBtn = e.target.closest('.btn-interest');
+    if (interestBtn) {
+        const id = interestBtn.getAttribute('data-id');
+        if (id) window.handleShowInterest(id);
+        return;
+    }
+
+    // Check if clicked element or parent is the remove button
+    const removeBtn = e.target.closest('.btn-remove-interest');
+    if (removeBtn) {
+        const id = removeBtn.getAttribute('data-id');
+        if (id) window.handleRemoveInterest(id);
+        return;
     }
 });
+
+window.handleRemoveInterest = async function (id) {
+    if (!confirm(getTrans('msg-remove-confirm'))) return;
+
+    let email = null;
+    if (IS_LOCAL) {
+        // Find email in local storage
+        const saved = getSavedEvents();
+        const entry = saved.find(item => item.id === id);
+        email = entry ? entry.email : null;
+
+        if (!email) {
+            // Fallback for old data or if missing
+            email = prompt(getTrans('prompt-remove-email'));
+        }
+    } else {
+        email = prompt(getTrans('prompt-remove-email'));
+    }
+
+    if (!email) return;
+
+    try {
+        const response = await fetch(`${API_BASE}/interest/remove`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ eventId: id, email: email })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.status === 'success') {
+            alert(getTrans('msg-removed'));
+            // Remove from local storage
+            let saved = getSavedEvents();
+            saved = saved.filter(item => item.id !== id);
+            localStorage.setItem('myEvents', JSON.stringify(saved));
+
+            updateMyEventsCount();
+            filterEvents(); // Re-render to update UI
+        } else {
+            alert('Error: ' + (result.detail || result.message || 'Could not remove interest.'));
+        }
+    } catch (err) {
+        console.error("Removal error:", err);
+        alert('Failed to remove interest. Please try again.');
+    }
+};
 
 function checkIsUpcoming(startDateStr) {
     if (!startDateStr) return false;
@@ -226,23 +301,23 @@ function filterEvents() {
     const country = filterCountry.value.toLowerCase();
     const date = filterDate.value;
 
-    let filtered = allEvents.filter(ev => {
-        const matchesTopic = !topic || ev.topic.toLowerCase().includes(topic);
-        const matchesCity = !city || ev.city.toLowerCase().includes(city);
-        const matchesCountry = !country || ev.country.toLowerCase().includes(country);
-
+    const checkMatch = (ev, t, c, co, d) => {
+        const matchesTopic = !t || ev.topic.toLowerCase().includes(t);
+        const matchesCity = !c || ev.city.toLowerCase().includes(c);
+        const matchesCountry = !co || ev.country.toLowerCase().includes(co);
         let matchesDate = true;
-        if (date) {
-            // date input is YYYY-MM
-            matchesDate = ev.startDate && ev.startDate.startsWith(date);
+        if (d) {
+            matchesDate = ev.startDate && ev.startDate.startsWith(d);
         }
-
         return matchesTopic && matchesCity && matchesCountry && matchesDate;
-    });
+    };
+
+    // 1. Main Display List (Filters applied: ALL)
+    let filtered = allEvents.filter(ev => checkMatch(ev, topic, city, country, date));
 
     if (filteringToSaved) {
-        const savedIds = getSavedEvents();
-        filtered = filtered.filter(ev => savedIds.includes(ev.id));
+        const savedEvents = getSavedEvents();
+        filtered = filtered.filter(ev => savedEvents.some(item => item.id === ev.id));
     }
 
     if (filteringToUpcoming) {
@@ -251,10 +326,17 @@ function filterEvents() {
 
     renderEvents(filtered);
 
-    // Dynamic Filtering Update (Cascading lookups?)
-    // User requested: "If the user selects “AI” as a topic, subsequent fields should only display data related to AI conferences."
-    // Ideally we re-calculate suggestions here based on 'filtered' subset.
-    updateTypeaheadSources(filtered);
+    // 2. Suggestion Sources (Dependent Filtering)
+    // For Topic suggestions: filter by City, Country, Date (Ignore Topic)
+    const topicSubset = allEvents.filter(ev => checkMatch(ev, '', city, country, date));
+
+    // For City suggestions: filter by Topic, Country, Date (Ignore City)
+    const citySubset = allEvents.filter(ev => checkMatch(ev, topic, '', country, date));
+
+    // For Country suggestions: filter by Topic, City, Date (Ignore Country)
+    const countrySubset = allEvents.filter(ev => checkMatch(ev, topic, city, '', date));
+
+    updateTypeaheadSources(topicSubset, citySubset, countrySubset);
 }
 
 function setupFilters() {
@@ -318,10 +400,17 @@ function setupTypeahead() {
     updateTypeaheadSources(allEvents);
 }
 
-function updateTypeaheadSources(subset) {
-    typeaheadSources['filter-topic'] = Array.from(new Set(subset.map(e => e.topic).filter(Boolean)));
-    typeaheadSources['filter-city'] = Array.from(new Set(subset.map(e => e.city).filter(Boolean)));
-    typeaheadSources['filter-country'] = Array.from(new Set(subset.map(e => e.country).filter(Boolean)));
+function updateTypeaheadSources(topicSubset, citySubset, countrySubset) {
+    // If called with single argument (initial load), use it for all
+    if (!citySubset && !countrySubset) {
+        topicSubset = topicSubset || [];
+        citySubset = topicSubset;
+        countrySubset = topicSubset;
+    }
+
+    typeaheadSources['filter-topic'] = Array.from(new Set(topicSubset.map(e => e.topic).filter(Boolean)));
+    typeaheadSources['filter-city'] = Array.from(new Set(citySubset.map(e => e.city).filter(Boolean)));
+    typeaheadSources['filter-country'] = Array.from(new Set(countrySubset.map(e => e.country).filter(Boolean)));
 }
 
 function attachTypeahead(input, sourceKey, listId) {
@@ -358,8 +447,8 @@ function attachTypeahead(input, sourceKey, listId) {
         }
     };
 
-    // Events
     input.addEventListener('focus', () => showSuggestions(input.value));
+    input.addEventListener('click', () => showSuggestions('')); // Show all on click
     input.addEventListener('input', () => showSuggestions(input.value));
     input.addEventListener('blur', () => {
         // Safe hide
@@ -369,11 +458,13 @@ function attachTypeahead(input, sourceKey, listId) {
 
 // --- My Events (Local Storage) ---
 function getSavedEvents() {
-    return JSON.parse(localStorage.getItem('myEvents') || '[]');
+    const raw = JSON.parse(localStorage.getItem('myEvents') || '[]');
+    // Normalize data: convert legacy [id1, id2] to [{id, email}]
+    return raw.map(item => typeof item === 'string' ? { id: item, email: '' } : item);
 }
 
 function isSaved(id) {
-    return getSavedEvents().includes(id);
+    return getSavedEvents().some(item => item.id === id);
 }
 
 // Make handleShowInterest globally accessible
@@ -449,7 +540,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (result.status === 'success') {
                     alert(getTrans('msg-saved'));
-                    saveLocally(data.eventId);
+                    saveLocally(data.eventId, data.email);
                     closeInterestModal();
                 } else {
                     const errorMsg = result.detail || result.message || 'Unknown error';
@@ -466,10 +557,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-function saveLocally(id) {
+function saveLocally(id, email) {
     let saved = getSavedEvents();
-    if (!saved.includes(id)) {
-        saved.push(id);
+    if (!saved.some(item => item.id === id)) {
+        saved.push({ id: id, email: email });
         localStorage.setItem('myEvents', JSON.stringify(saved));
         updateMyEventsCount();
         filterEvents(); // Re-render to update button state
@@ -639,7 +730,7 @@ function checkReminders() {
     const upcoming = [];
 
     allEvents.forEach(ev => {
-        if (savedIds.includes(ev.id)) {
+        if (getSavedEvents().some(item => item.id === ev.id)) {
             const eventDate = new Date(ev.startDate);
             const diffTime = eventDate - today;
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));

@@ -19,15 +19,20 @@ if IS_VERCEL:
 else:
     STORAGE_DIR = os.path.join(BASE_DIR, "storage")
 
+from backend.blob_storage import BlobStorage
+
 DATA_FILE = os.path.join(STORAGE_DIR, "events.json")
-INTERESTS_FILE = os.path.join(STORAGE_DIR, "UserInterests.xlsx")
+# INTERESTS_FILE removed in favor of Blob
 SEED_DATA_FILE = os.path.join(BASE_DIR, "storage", "events.json")
+BLOB_INTERESTS_KEY = "user_interests.json"
 
 class DataManager:
     def __init__(self):
         self.events: List[Dict] = []
         self.geocoder = Nominatim(user_agent="conference_portal_app")
         self.geocache = {}  # Cache to avoid repeated API calls
+        
+        self.blob_storage = BlobStorage()
         
         # On Vercel, seed the /tmp/storage if it's empty
         if IS_VERCEL and not os.path.exists(DATA_FILE) and os.path.exists(SEED_DATA_FILE):
@@ -36,10 +41,33 @@ class DataManager:
              
         self.load_data()
 
+    def _fetch_all_raw_interests(self) -> List[Dict]:
+        """Helper to fetch all individual interest blobs."""
+        try:
+            # Relaxed prefix to 'interests' generally
+            blobs = self.blob_storage.list(prefix="interests")
+            all_interests = []
+            
+            for b in blobs:
+                # Double check path if needed
+                if "interests" not in b.get("pathname", ""):
+                    continue
+                    
+                url = b.get("url")
+                data = self.blob_storage.get_json(url)
+                if data:
+                    if isinstance(data, list):
+                        all_interests.extend(data)
+                    elif isinstance(data, dict):
+                        all_interests.append(data)
+            return all_interests
+        except Exception as e:
+            print(f"Error fetching raw interests: {e}")
+            return []
+
     def save_interest(self, user_data: Dict) -> Dict:
         """
-        Save user interest to Excel.
-        Expected user_data: { firstName, lastName, username, email, role, city, country, eventId, confirmed, consent }
+        Save user interest as a separate blob.
         """
         try:
             # 1. Prepare Data
@@ -49,50 +77,45 @@ class DataManager:
             if not event:
                 return {"status": "error", "message": "Event not found"}
 
-            # Event Price - Placeholder as it's not in current schema, defaulting to 'TBD' or pulling if added later
             event_price = event.get("price", "TBD")
             
             record = {
-                "First Name": user_data.get("firstName"),
-                "Last Name": user_data.get("lastName"),
-                "BH Username": user_data.get("username"),
-                "BH Email": user_data.get("email"),
-                "Role": user_data.get("role"),
-                "City": user_data.get("city"),
-                "Country": user_data.get("country"),
-                "Event Name": event.get("eventName"),
-                "Event Price": event_price,
-                "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                "firstName": user_data.get("firstName"),
+                "lastName": user_data.get("lastName"),
+                "username": user_data.get("username"),
+                "email": user_data.get("email"),
+                "role": user_data.get("role"),
+                "city": user_data.get("city"),
+                "country": user_data.get("country"),
+                "topic": event.get("topic"),
+                "eventName": event.get("eventName"),
+                "eventPrice": event_price,
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             }
 
-            # 2. Load or Create DataFrame
-            if os.path.exists(INTERESTS_FILE):
-                df = pd.read_excel(INTERESTS_FILE)
-            else:
-                df = pd.DataFrame(columns=["First Name", "Last Name", "BH Username", "BH Email", "Role", "City", "Country", "Event Name", "Event Price", "Timestamp"])
-
-            # 3. Duplicate Check (Email OR Username + Event Name)
-            # Check if user already registered for THIS event
+            # 2. Duplicate Check (Requires fetching all)
+            existing_data = self._fetch_all_raw_interests()
+            
             is_duplicate = False
-            if not df.empty:
-                # Filter for this event
-                event_mask = df["Event Name"] == record["Event Name"]
-                user_mask = (df["BH Email"] == record["BH Email"]) | (df["BH Username"] == record["BH Username"])
-                
-                if not df[event_mask & user_mask].empty:
+            for entry in existing_data:
+                same_event = entry.get("eventName") == record["eventName"]
+                same_user = (entry.get("email") == record["email"]) or (entry.get("username") == record["username"])
+                if same_event and same_user:
                     is_duplicate = True
+                    break
 
             if is_duplicate:
                 return {"status": "error", "message": "You have already registered interest for this event."}
 
-            # 4. Append and Save
-            # Using concat instead of append (deprecated)
-            new_row = pd.DataFrame([record])
-            df = pd.concat([df, new_row], ignore_index=True)
-            
-            # Ensure dir exists
-            os.makedirs(os.path.dirname(INTERESTS_FILE), exist_ok=True)
-            df.to_excel(INTERESTS_FILE, index=False)
+            # 3. Save as NEW Blob (Single Object)
+            # Vercel Blob will add a random suffix ensuring uniqueness if we don't overwrite
+            try:
+                # We save just the dict, or a list of one dict? User said "blobs for every interests".
+                # Standard is usually storing the object itself.
+                self.blob_storage.put("interests/interest.json", json.dumps(record, indent=2))
+            except Exception as e:
+                print(f"Failed to upload to blob: {e}")
+                raise e
 
             return {"status": "success", "message": "Interest registered successfully!"}
 
@@ -100,17 +123,123 @@ class DataManager:
             print(f"Error saving interest: {e}")
             return {"status": "error", "message": str(e)}
 
+    def remove_interest(self, event_id: str, email: str) -> Dict:
+        """
+        Remove user interest by deleting the corresponding blob.
+        """
+        try:
+            # 1. Get Event Name
+            event = next((e for e in self.events if e["id"] == event_id), None)
+            if not event:
+                return {"status": "error", "message": "Event not found"}
+            
+            target_event_name = event.get("eventName")
+            target_email = email.strip().lower()
+
+            # 2. Find and Delete the Blob
+            blobs = self.blob_storage.list(prefix="interests")
+            deleted_count = 0
+            
+            for b in blobs:
+                url = b.get("url")
+                # We need to fetch the JSON to verify the email and eventName
+                # because Vercel Blob listing doesn't show custom metadata easily in list
+                data = self.blob_storage.get_json(url)
+                
+                if data and isinstance(data, dict):
+                    blob_email = str(data.get("email", "")).strip().lower()
+                    blob_event = data.get("eventName")
+                    
+                    if blob_email == target_email and blob_event == target_event_name:
+                        # Match found! Delete it.
+                        success = self.blob_storage.delete(url)
+                        if success:
+                            deleted_count += 1
+
+            if deleted_count > 0:
+                return {"status": "success", "message": f"Interest removed successfully."}
+            else:
+                return {"status": "error", "message": "No matching interest found to remove."}
+
+        except Exception as e:
+            print(f"Error removing interest: {e}")
+            return {"status": "error", "message": str(e)}
+
+    def remove_all_interests_for_event(self, event_name: str) -> Dict:
+        """
+        Remove ALL interests for a specific event (Admin function).
+        """
+        try:
+            blobs = self.blob_storage.list(prefix="interests")
+            deleted_count = 0
+            
+            for b in blobs:
+                url = b.get("url")
+                data = self.blob_storage.get_json(url)
+                
+                if data and isinstance(data, dict):
+                    if data.get("eventName") == event_name:
+                        success = self.blob_storage.delete(url)
+                        if success:
+                            deleted_count += 1
+
+            return {"status": "success", "message": f"Successfully removed {deleted_count} interests for '{event_name}'."}
+
+        except Exception as e:
+            print(f"Error clearing event interests: {e}")
+            return {"status": "error", "message": str(e)}
+
     def get_interests(self) -> List[Dict]:
-        if os.path.exists(INTERESTS_FILE):
-            try:
-                df = pd.read_excel(INTERESTS_FILE)
-                return df.fillna("").to_dict(orient="records")
-            except Exception:
-                return []
-        return []
+        """
+        Fetch all interests and AGGREGATE them for Admin Dashboard.
+        Returns: [{ 'Event Name', 'Fees', 'No. of interests', 'Total' }]
+        """
+        try:
+            raw_data = self._fetch_all_raw_interests()
+            
+            # Aggregation Logic
+            # Group by Event Name + Price
+            # Output: Event Name, Fees, No. of interests, Total
+            
+            grouped = {}
+            
+            for item in raw_data:
+                event_name = item.get("eventName", "Unknown")
+                price_str = str(item.get("eventPrice", "0")).replace("$", "").replace(",", "")
+                
+                # Parse price
+                try:
+                    price = float(price_str) if price_str.lower() != "tbd" else 0
+                except:
+                    price = 0
+                    
+                key = (event_name, item.get("eventPrice", "TBD"))
+                
+                if key not in grouped:
+                    grouped[key] = {
+                        "count": 0,
+                        "total_value": 0
+                    }
+                
+                grouped[key]["count"] += 1
+                grouped[key]["total_value"] += price
+
+            # Format result
+            results = []
+            for (ev_name, ev_price), stats in grouped.items():
+                results.append({
+                    "Event Name": ev_name,
+                    "Fees": ev_price,
+                    "No. of interests": stats["count"],
+                    "Total": stats["total_value"] # Or should this be formatted with currency?
+                })
+                
+            return results
+        except Exception as e:
+            print(f"Error fetching interests from blob: {e}")
+            return []
     
-    def get_interests_file(self) -> str:
-        return INTERESTS_FILE
+    # get_interests_file removed as we generate on fly now
 
     def load_data(self):
         if os.path.exists(DATA_FILE):
@@ -274,7 +403,7 @@ class DataManager:
                 elif "location" in c_lower: col_map["location"] = col
                 elif "agencies" in c_lower: col_map["agencies"] = col
                 elif "quarter" in c_lower: col_map["quarter"] = col
-                elif "price" in c_lower or "cost" in c_lower or "budget" in c_lower: col_map["price"] = col
+                elif "fees" in c_lower or "price" in c_lower or "cost" in c_lower or "budget" in c_lower: col_map["price"] = col
                 elif c_str.startswith("Unnamed"): 
                     # Assuming the unnamed column after location is the link
                     # For safety, we might check if the content looks like a URL later, 
@@ -406,7 +535,7 @@ class DataManager:
                     "registrationUrl": link if link else "#",
                     "description": "", # No description column mentioned?
                     "tags": "",
-                    "price": get_val("price", "TBD"),
+                    "price": get_val("price", "TBD"), # Store as price
                     "lat": coords["lat"] if coords else None,
                     "lng": coords["lng"] if coords else None
                 }

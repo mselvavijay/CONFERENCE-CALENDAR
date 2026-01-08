@@ -5,7 +5,15 @@ import os
 from fastapi.responses import FileResponse
 from typing import Optional, List, Dict
 from pydantic import BaseModel
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 from backend.data_manager import data_manager
+import pandas as pd
+import tempfile
 
 app = FastAPI()
 
@@ -94,6 +102,30 @@ async def save_interest(request: InterestRequest):
         raise HTTPException(status_code=400, detail=result["message"])
     return result
 
+class RemoveInterestRequest(BaseModel):
+    eventId: str
+    email: str
+
+@app.post("/api/interest/remove")
+async def remove_interest(request: RemoveInterestRequest):
+    result = data_manager.remove_interest(request.eventId, request.email)
+    if result["status"] == "error":
+        raise HTTPException(status_code=400, detail=result["message"])
+    return result
+
+@app.post("/api/admin/interest/clear")
+async def clear_interests(request: Dict):
+    admin_secret = request.get("adminSecret")
+    event_name = request.get("eventName")
+    
+    if admin_secret != "admin123":
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    if not event_name:
+        raise HTTPException(status_code=400, detail="Missing eventName")
+        
+    return data_manager.remove_all_interests_for_event(event_name)
+
 @app.get("/api/admin/interests")
 async def get_interests(passphrase: str):
     ADMIN_SECRET = "admin123"
@@ -107,11 +139,27 @@ async def download_interests(passphrase: str):
     if passphrase != ADMIN_SECRET:
         raise HTTPException(status_code=401, detail="Unauthorized")
     
-    file_path = data_manager.get_interests_file()
-    if not os.path.exists(file_path):
-        raise HTTPException(status_code=404, detail="No interest file found yet.")
+    data = data_manager.get_interests()
+    
+    if not data:
+        df = pd.DataFrame(columns=["Event Name", "Fees", "No. of interests", "Total"])
+    else:
+        # Data is already aggregated from get_interests()
+        # Keys: 'Event Name', 'Fees', 'No. of interests', 'Total'
+        df = pd.DataFrame(data)
         
-    return FileResponse(file_path, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', filename="UserInterests.xlsx")
+        # Ensure correct column order
+        cols = ["Event Name", "Fees", "No. of interests", "Total"]
+        # Filter/Order if keys match, otherwise empty
+        final_cols = [c for c in cols if c in df.columns]
+        df = df[final_cols]
+
+    # Save to temp file
+    # Use standard temp dir
+    tmp_path = os.path.join(tempfile.gettempdir(), "UserInterests_Summary.xlsx")
+    df.to_excel(tmp_path, index=False)
+        
+    return FileResponse(tmp_path, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', filename="UserInterests_Summary.xlsx")
 
 
 # Serve Frontend

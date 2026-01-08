@@ -540,7 +540,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 firstName: document.getElementById('int-fname').value,
                 lastName: document.getElementById('int-lname').value,
                 username: document.getElementById('int-username').value,
-                email: document.getElementById('int-email').value,
+                email: document.getElementById('int-email').value.trim().toLowerCase(),
                 role: document.getElementById('int-role').value,
                 city: document.getElementById('int-city').value,
                 country: document.getElementById('int-country').value,
@@ -548,6 +548,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 confirmed: document.getElementById('int-confirm').checked,
                 consent: document.getElementById('int-consent').checked
             };
+
+            // Email Domain Validation
+            if (!data.email.endsWith('@bakerhughes.com')) {
+                alert(getTrans('msg-invalid-email'));
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                return;
+            }
 
             try {
                 const response = await fetch(`${API_BASE}/interest`, {

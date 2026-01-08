@@ -82,7 +82,7 @@ class DataManager:
 
             # 1.5 Domain Validation
             if not email.endswith("@bakerhughes.com"):
-                return {"status": "error", "message": "Access restricted. Please use a valid @bakerhughes.com email address."}
+                return {"status": "error", "message": "Access restricted. Please use a valid BH email address."}
 
             record = {
                 "firstName": user_data.get("firstName"),

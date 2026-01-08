@@ -29,7 +29,7 @@ const translations = {
         "msg-remove-confirm": "Do you want to remove your interest?",
         "msg-orphan-remove": "Your interest is no longer in the admin database! Proceed to remove?",
         "msg-local-clear-confirm": "Do you want to remove this interest? It will not be withdrawn from the admin side but will clear your interest list.",
-        "msg-invalid-email": "Please use a valid @bakerhughes.com email address."
+        "msg-invalid-email": "Please use a valid BH email address."
     },
     "fr": {
         "nav-home": "Accueil",
@@ -58,7 +58,7 @@ const translations = {
         "msg-remove-confirm": "Voulez-vous retirer votre intérêt ?",
         "msg-orphan-remove": "Votre intérêt n'est plus dans la base de données ! Procéder à la suppression ?",
         "msg-local-clear-confirm": "Voulez-vous supprimer cet intérêt ? Il ne sera pas retiré du côté administrateur mais effacera votre liste.",
-        "msg-invalid-email": "Veuillez utiliser une adresse e-mail @bakerhughes.com valide."
+        "msg-invalid-email": "Veuillez utiliser une adresse e-mail BH valide."
     },
     "es": {
         "nav-home": "Inicio",
@@ -87,7 +87,7 @@ const translations = {
         "msg-remove-confirm": "¿Quieres retirar tu interés?",
         "msg-orphan-remove": "¡Tu interés ya no está en la base de datos! ¿Proceder a eliminar?",
         "msg-local-clear-confirm": "¿Quieres eliminar este interés? No se retirará del lado del administrador pero se borrará de tu lista.",
-        "msg-invalid-email": "Utilice una dirección de correo electrónico válida de @bakerhughes.com."
+        "msg-invalid-email": "Utilice una dirección de correo electrónico válida de BH."
     },
     "de": {
         "nav-home": "Startseite",
@@ -116,7 +116,7 @@ const translations = {
         "msg-remove-confirm": "Möchten Sie Ihr Interesse zurückziehen?",
         "msg-orphan-remove": "Ihr Interesse ist nicht mehr in der Datenbank! Entfernen?",
         "msg-local-clear-confirm": "Möchten Sie dieses Interesse entfernen? Es wird nicht admin-seitig gelöscht, aber Ihre Liste wird geleert.",
-        "msg-invalid-email": "Bitte verwenden Sie eine gültige @bakerhughes.com-E-Mail-Adresse."
+        "msg-invalid-email": "Bitte verwenden Sie eine gültige BH-E-Mail-Adresse."
     },
     "it": {
         "nav-home": "Home",
@@ -145,7 +145,7 @@ const translations = {
         "msg-remove-confirm": "Vuoi ritirare il tuo interesse?",
         "msg-orphan-remove": "Il tuo interesse non è più nel database! Procedere alla rimozione?",
         "msg-local-clear-confirm": "Vuoi rimuovere questo interesse? Non sarà ritirato dal lato amministratore ma pulirà la tua lista.",
-        "msg-invalid-email": "Utilizza un indirizzo email @bakerhughes.com valido.",
+        "msg-invalid-email": "Utilizza un indirizzo email BH valido.",
         "btn-upcoming": "Prossimi Eventi",
         "nav-upcoming": "In arrivo"
     }

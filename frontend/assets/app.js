@@ -4,6 +4,14 @@ const API_BASE = (!window.location.hostname || window.location.hostname === "loc
 
 const IS_LOCAL = (!window.location.hostname || window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
 
+// --- Version Control (Force Clear Legacy Data) ---
+const APP_VERSION = "2.1"; // Increment this to force clear everyone's local storage for fresh structure
+if (localStorage.getItem('app_version') !== APP_VERSION) {
+    localStorage.removeItem('myEvents');
+    localStorage.setItem('app_version', APP_VERSION);
+    console.log("Legacy interest data cleared for version upgrade.");
+}
+
 let allEvents = [];
 let map;
 let markers = [];
@@ -239,16 +247,16 @@ document.addEventListener('click', (e) => {
 });
 
 window.handleRemoveInterest = async function (id) {
+    // 1. One simple confirmation is sufficient as requested
     if (!confirm(getTrans('msg-remove-confirm'))) return;
 
-    let email = null;
-    // Attempt to find email in local storage for one-click removal
+    // 2. Look for email in local storage
     const saved = getSavedEvents();
     const entry = saved.find(item => item.id === id);
-    email = entry ? entry.email : null;
+    let email = entry ? entry.email : null;
 
+    // 3. Fallback: If no email found (should be rare now after version clear), ask once
     if (!email) {
-        // Fallback for old data or if not found
         email = prompt(getTrans('prompt-remove-email'));
     }
 

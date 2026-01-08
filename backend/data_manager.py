@@ -78,12 +78,17 @@ class DataManager:
                 return {"status": "error", "message": "Event not found"}
 
             event_price = event.get("price", "TBD")
-            
+            email = user_data.get("email", "").strip().lower()
+
+            # 1.5 Domain Validation
+            if not email.endswith("@bakerhughes.com"):
+                return {"status": "error", "message": "Access restricted. Please use a valid @bakerhughes.com email address."}
+
             record = {
                 "firstName": user_data.get("firstName"),
                 "lastName": user_data.get("lastName"),
                 "username": user_data.get("username"),
-                "email": user_data.get("email"),
+                "email": email,
                 "role": user_data.get("role"),
                 "city": user_data.get("city"),
                 "country": user_data.get("country"),

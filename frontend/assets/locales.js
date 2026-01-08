@@ -26,7 +26,9 @@ const translations = {
         "msg-no-events": "No events saved by you! Please add some events.",
         "msg-removed": "Your interest has been withdrawn successfully.",
         "prompt-remove-email": "Please enter your email to confirm withdrawal:",
-        "msg-remove-confirm": "Confirm action: Your interest will be removed from both your list and the admin records. Proceed?"
+        "msg-remove-confirm": "Do you want to remove your interest?",
+        "msg-orphan-remove": "Your interest is no longer in the admin database! Proceed to remove?",
+        "msg-local-clear-confirm": "Do you want to remove this interest? It will not be withdrawn from the admin side but will clear your interest list."
     },
     "fr": {
         "nav-home": "Accueil",
@@ -52,7 +54,9 @@ const translations = {
         "msg-no-events": "Aucun événement trouvé.",
         "msg-removed": "Votre intérêt a été retiré avec succès.",
         "prompt-remove-email": "Veuillez entrer votre email pour confirmer le retrait:",
-        "msg-remove-confirm": "Confirmez l’action : Votre intérêt sera supprimé de votre liste et des dossiers administratifs. Voulez-vous continuer ?"
+        "msg-remove-confirm": "Voulez-vous retirer votre intérêt ?",
+        "msg-orphan-remove": "Votre intérêt n'est plus dans la base de données ! Procéder à la suppression ?",
+        "msg-local-clear-confirm": "Voulez-vous supprimer cet intérêt ? Il ne sera pas retiré du côté administrateur mais effacera votre liste."
     },
     "es": {
         "nav-home": "Inicio",
@@ -78,7 +82,9 @@ const translations = {
         "msg-no-events": "No se encontraron eventos.",
         "msg-removed": "Su interés ha sido retirado con éxito.",
         "prompt-remove-email": "Por favor, ingrese su correo electrónico para confirmar el retiro:",
-        "msg-remove-confirm": "Confirme la acción: Su interés se eliminará tanto de su lista como de los registros administrativos. ¿Desea continuar?"
+        "msg-remove-confirm": "¿Quieres retirar tu interés?",
+        "msg-orphan-remove": "¡Tu interés ya no está en la base de datos! ¿Proceder a eliminar?",
+        "msg-local-clear-confirm": "¿Quieres eliminar este interés? No se retirará del lado del administrador pero se borrará de tu lista."
     },
     "de": {
         "nav-home": "Startseite",
@@ -104,7 +110,9 @@ const translations = {
         "msg-no-events": "Keine Veranstaltungen gefunden.",
         "msg-removed": "Ihr Interesse wurde erfolgreich zurückgezogen.",
         "prompt-remove-email": "Bitte geben Sie Ihre E-Mail-Adresse ein, um den Widerruf zu bestätigen:",
-        "msg-remove-confirm": "Aktion bestätigen: Ihr Interesse wird sowohl aus Ihrer Liste als auch aus den Verwaltungsunterlagen entfernt. Möchten Sie fortfahren?"
+        "msg-remove-confirm": "Möchten Sie Ihr Interesse zurückziehen?",
+        "msg-orphan-remove": "Ihr Interesse ist nicht mehr in der Datenbank! Entfernen?",
+        "msg-local-clear-confirm": "Möchten Sie dieses Interesse entfernen? Es wird nicht admin-seitig gelöscht, aber Ihre Liste wird geleert."
     },
     "it": {
         "nav-home": "Home",
@@ -130,7 +138,9 @@ const translations = {
         "msg-no-events": "Nessun evento salvato! Aggiungi alcuni eventi.",
         "msg-removed": "Il tuo interesse è stato ritirato con successo.",
         "prompt-remove-email": "Inserisci la tua email per confermare il ritiro:",
-        "msg-remove-confirm": "Conferma azione: Il tuo interesse verrà rimosso sia dalla tua lista che dai registri amministrativi. Procedere?",
+        "msg-remove-confirm": "Vuoi ritirare il tuo interesse?",
+        "msg-orphan-remove": "Il tuo interesse non è più nel database! Procedere alla rimozione?",
+        "msg-local-clear-confirm": "Vuoi rimuovere questo interesse? Non sarà ritirato dal lato amministratore ma pulirà la tua lista.",
         "btn-upcoming": "Prossimi Eventi",
         "nav-upcoming": "In arrivo"
     }

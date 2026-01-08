@@ -129,6 +129,7 @@ function renderEvents(events) {
         const card = document.createElement('div');
         card.className = 'event-card';
         card.innerHTML = `
+            ${filteringToSaved ? `<button class="btn-close-local" onclick="handleClearLocalInterest('${event.id}')" title="Clear locally only">×</button>` : ''}
             <div class="event-info">
                 <h3>${event.eventName}</h3>
                 <p><strong>Topic:</strong> ${event.topic} | <strong>Date:</strong> ${event.startDate}</p>
@@ -182,8 +183,9 @@ function renderEvents(events) {
         group.events.forEach((event, idx) => {
             const isLast = idx === group.events.length - 1;
             popupContent += `
-                <div style="margin-bottom: ${isLast ? '0' : '15px'}; ${isLast ? '' : 'border-bottom: 1px solid #eee; padding-bottom: 15px;'}">
+                <div style="margin-bottom: ${isLast ? '0' : '15px'}; ${isLast ? '' : 'border-bottom: 1px solid #eee; padding-bottom: 15px;'} position: relative;">
                     <h3 style="margin:0 0 8px 0; font-size:1.1em; color:#2c3e50; font-weight:700;">${event.eventName}</h3>
+                    ${filteringToSaved ? `<button class="btn-close-local" onclick="handleClearLocalInterest('${event.id}')" title="Clear locally only" style="top:0; right:0; color:#888;">×</button>` : ''}
                     
                     <div style="font-size:0.85em; line-height:1.5; margin-bottom: 10px;">
                         <span style="color:#7f8c8d; font-weight:600;">Topic:</span> ${event.topic}<br>
@@ -273,13 +275,12 @@ window.handleRemoveInterest = async function (id) {
 
         if (response.ok && result.status === 'success') {
             alert(getTrans('msg-removed'));
-            // Remove from local storage
-            let saved = getSavedEvents();
-            saved = saved.filter(item => item.id !== id);
-            localStorage.setItem('myEvents', JSON.stringify(saved));
-
-            updateMyEventsCount();
-            filterEvents(); // Re-render to update UI
+            removeLocally(id);
+        } else if (result.message && result.message.includes("not found")) {
+            // Orphaned record case
+            if (confirm(getTrans('msg-orphan-remove'))) {
+                removeLocally(id);
+            }
         } else {
             alert('Error: ' + (result.detail || result.message || 'Could not remove interest.'));
         }
@@ -288,6 +289,21 @@ window.handleRemoveInterest = async function (id) {
         alert('Failed to remove interest. Please try again.');
     }
 };
+
+window.handleClearLocalInterest = function (id) {
+    if (confirm(getTrans('msg-local-clear-confirm'))) {
+        removeLocally(id);
+    }
+};
+
+function removeLocally(id) {
+    let saved = getSavedEvents();
+    saved = saved.filter(item => item.id !== id);
+    localStorage.setItem('myEvents', JSON.stringify(saved));
+
+    updateMyEventsCount();
+    filterEvents(); // Re-render to update UI
+}
 
 function checkIsUpcoming(startDateStr) {
     if (!startDateStr) return false;
